@@ -18,7 +18,7 @@
   Acceptance: Running `uvicorn main:app --reload` starts the server. Visiting `http://localhost:8000` in Chrome shows the MacroDay placeholder page. Visiting `http://localhost:8000/assets/Milo_Good.png` returns the mascot image.
   Verify: Run `uvicorn main:app --reload` in terminal. Open Chrome at `http://localhost:8000`. Confirm "MacroDay" heading appears and no console errors.
 
-- [ ] **2. POST /api/analyze — Claude Haiku integration**
+- [x] **2. POST /api/analyze — Claude Haiku integration**
   Spec ref: `spec.md > Backend > POST /api/analyze` and `spec.md > Backend > Claude Prompt Design`
   What to build: In `main.py`, add a Pydantic request model (`AnalyzeRequest`) matching the spec's JSON structure: `meals` (breakfast/lunch/dinner/snacks), `targets` (5 macros), `mode` ("morning"/"night"), `mascot` ("milo"/"vilo"). Implement the `POST /api/analyze` endpoint. Build the Claude system prompt dynamically: if `mascot == "milo"` use the warm/encouraging voice; if `mascot == "vilo"` use the ragebait/harsh villain voice. Include vague-input detection rules in the prompt. Call `claude-haiku-4-5-20251001` with `max_tokens=1000`. Parse the JSON response and return it. Handle `needs_clarification: true` path. Load `ANTHROPIC_API_KEY` from environment via `python-dotenv`.
   Acceptance: POSTing a valid meal payload to `/api/analyze` returns JSON with `macros`, `gaps`, `feedback`, `snack_suggestions`, and `affirmation` fields. Posting a vague meal like "some chicken" returns `needs_clarification: true` with a `clarification_message`. Vilo mode returns noticeably harsher `feedback` and `affirmation` text than Milo mode.
