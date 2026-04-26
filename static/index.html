@@ -7,7 +7,88 @@
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-  <h1>MacroDay</h1>
+
+  <!-- Nav bar — persistent across all screens -->
+  <nav id="main-nav">
+    <span class="nav-brand">MacroDay</span>
+    <button class="nav-profile-btn" onclick="showScreen('screen-profile')" title="Profile settings">⚙️</button>
+  </nav>
+
+  <!-- SCREEN: Profile Setup -->
+  <section id="screen-profile" class="active">
+    <div class="screen-content">
+      <h2>Set Your Goals</h2>
+      <p class="subtitle">Tell MacroDay what you're working toward.</p>
+
+      <!-- Goal selector -->
+      <div class="form-group">
+        <label class="form-label">Fitness Goal</label>
+        <div class="goal-buttons" id="goal-buttons">
+          <button class="goal-btn" data-goal="bulking" onclick="selectGoal(this)">Bulking</button>
+          <button class="goal-btn" data-goal="cutting" onclick="selectGoal(this)">Cutting</button>
+          <button class="goal-btn" data-goal="general" onclick="selectGoal(this)">General Health</button>
+        </div>
+      </div>
+
+      <!-- Macro targets -->
+      <div class="form-group">
+        <label class="form-label">Daily Macro Targets</label>
+        <div class="macro-inputs">
+          <div class="macro-input-row">
+            <label for="target-calories">Calories</label>
+            <input type="number" id="target-calories" placeholder="e.g. 2500" min="0" />
+          </div>
+          <div class="macro-input-row">
+            <label for="target-protein">Protein (g)</label>
+            <input type="number" id="target-protein" placeholder="e.g. 180" min="0" />
+          </div>
+          <div class="macro-input-row">
+            <label for="target-fiber">Fiber (g)</label>
+            <input type="number" id="target-fiber" placeholder="e.g. 35" min="0" />
+          </div>
+          <div class="macro-input-row">
+            <label for="target-carbs">Carbs (g)</label>
+            <input type="number" id="target-carbs" placeholder="e.g. 280" min="0" />
+          </div>
+          <div class="macro-input-row">
+            <label for="target-fats">Fats (g)</label>
+            <input type="number" id="target-fats" placeholder="e.g. 70" min="0" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Mascot toggle -->
+      <div class="form-group">
+        <label class="form-label">Choose Your Coach</label>
+        <div class="mascot-toggle" id="mascot-toggle">
+          <button class="mascot-btn active" data-mascot="milo" onclick="selectMascot(this)">
+            <img src="/assets/Milo_Good.png" alt="Milo" class="mascot-preview" />
+            <span>Milo (Good)</span>
+          </button>
+          <button class="mascot-btn" data-mascot="vilo" onclick="selectMascot(this)">
+            <img src="/assets/Vilo_Evil.png" alt="Evil Vilo" class="mascot-preview" />
+            <span>Evil Vilo</span>
+          </button>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="saveProfile()">Save Profile</button>
+
+      <div id="profile-confirmation" class="confirmation-msg hidden">
+        Profile saved. Your daily targets are set.
+      </div>
+    </div>
+  </section>
+
+  <!-- Placeholder screens — will be built in later steps -->
+  <section id="screen-morning"><div class="screen-content"><h2>Morning Check-In</h2></div></section>
+  <section id="screen-morning-result"><div class="screen-content"><h2>Morning Results</h2></div></section>
+  <section id="screen-midday"><div class="screen-content"><h2>Mid-Day View</h2></div></section>
+  <section id="screen-afternoon"><div class="screen-content"><h2>Afternoon</h2></div></section>
+  <section id="screen-night"><div class="screen-content"><h2>Night Check-In</h2></div></section>
+  <section id="screen-summary"><div class="screen-content"><h2>End-of-Day Summary</h2></div></section>
+  <section id="screen-sleep"><div class="screen-content"><h2>Sleep</h2></div></section>
+
   <script src="/static/app.js"></script>
   <script src="/static/analyze.js"></script>
   <script src="/static/calendar.js"></script>

@@ -1,0 +1,253 @@
+/* ─── Reset & Base ──────────────────────────────────────────────────────── */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f5f7fa;
+  color: #1a1a2e;
+  min-height: 100vh;
+}
+
+/* ─── Nav ────────────────────────────────────────────────────────────────── */
+
+#main-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #1a1a2e;
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-brand {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #7ed6a3;
+}
+
+.nav-profile-btn {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+
+.nav-profile-btn:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* ─── Screen visibility ─────────────────────────────────────────────────── */
+
+section {
+  display: none;
+}
+
+section.active {
+  display: block;
+}
+
+/* ─── Screen content wrapper ────────────────────────────────────────────── */
+
+.screen-content {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+}
+
+h2 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #1a1a2e;
+  margin-bottom: 0.35rem;
+}
+
+.subtitle {
+  color: #666;
+  font-size: 0.95rem;
+  margin-bottom: 1.75rem;
+}
+
+/* ─── Form groups ────────────────────────────────────────────────────────── */
+
+.form-group {
+  margin-bottom: 1.75rem;
+}
+
+.form-label {
+  display: block;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #555;
+  margin-bottom: 0.6rem;
+}
+
+/* ─── Goal buttons ───────────────────────────────────────────────────────── */
+
+.goal-buttons {
+  display: flex;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.goal-btn {
+  padding: 0.55rem 1.1rem;
+  border: 2px solid #d0d5dd;
+  border-radius: 24px;
+  background: #fff;
+  color: #444;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.goal-btn:hover {
+  border-color: #7ed6a3;
+  color: #1a1a2e;
+}
+
+.goal-btn.active {
+  background: #1a1a2e;
+  border-color: #1a1a2e;
+  color: #7ed6a3;
+}
+
+/* ─── Macro inputs ───────────────────────────────────────────────────────── */
+
+.macro-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.macro-input-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.macro-input-row label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
+  min-width: 90px;
+}
+
+.macro-input-row input {
+  flex: 1;
+  padding: 0.55rem 0.75rem;
+  border: 1.5px solid #d0d5dd;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  background: #fff;
+  color: #1a1a2e;
+  transition: border-color 0.15s;
+  max-width: 180px;
+}
+
+.macro-input-row input:focus {
+  outline: none;
+  border-color: #7ed6a3;
+}
+
+/* ─── Mascot toggle ──────────────────────────────────────────────────────── */
+
+.mascot-toggle {
+  display: flex;
+  gap: 1rem;
+}
+
+.mascot-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border: 2px solid #d0d5dd;
+  border-radius: 14px;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #444;
+}
+
+.mascot-btn:hover {
+  border-color: #7ed6a3;
+}
+
+.mascot-btn.active {
+  border-color: #1a1a2e;
+  background: #f0faf4;
+  color: #1a1a2e;
+}
+
+.mascot-preview {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+/* ─── Buttons ────────────────────────────────────────────────────────────── */
+
+.btn-primary {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  background: #1a1a2e;
+  color: #7ed6a3;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  letter-spacing: 0.02em;
+}
+
+.btn-primary:hover {
+  background: #2a2a4e;
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-primary:disabled {
+  background: #c0c0c0;
+  color: #888;
+  cursor: not-allowed;
+}
+
+/* ─── Confirmation message ───────────────────────────────────────────────── */
+
+.confirmation-msg {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: #e8faf0;
+  border: 1.5px solid #7ed6a3;
+  border-radius: 10px;
+  color: #1a6b45;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.hidden {
+  display: none;
+}

@@ -1,0 +1,96 @@
+/* ─── State ─────────────────────────────────────────────────────────────── */
+
+let selectedGoal = null;
+let selectedMascot = 'milo';
+
+/* ─── Screen switching ──────────────────────────────────────────────────── */
+
+function showScreen(id) {
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById(id);
+  if (target) target.classList.add('active');
+}
+
+/* ─── Profile screen ─────────────────────────────────────────────────────── */
+
+function selectGoal(btn) {
+  document.querySelectorAll('.goal-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedGoal = btn.dataset.goal;
+}
+
+function selectMascot(btn) {
+  document.querySelectorAll('.mascot-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedMascot = btn.dataset.mascot;
+}
+
+function saveProfile() {
+  const calories = document.getElementById('target-calories').value;
+  const protein  = document.getElementById('target-protein').value;
+  const fiber    = document.getElementById('target-fiber').value;
+  const carbs    = document.getElementById('target-carbs').value;
+  const fats     = document.getElementById('target-fats').value;
+
+  if (!selectedGoal) {
+    alert('Please select a fitness goal.');
+    return;
+  }
+  if (!calories || !protein || !fiber || !carbs || !fats) {
+    alert('Please fill in all five macro targets.');
+    return;
+  }
+
+  const profile = {
+    goal: selectedGoal,
+    targets: {
+      calories: parseInt(calories),
+      protein:  parseInt(protein),
+      fiber:    parseInt(fiber),
+      carbs:    parseInt(carbs),
+      fats:     parseInt(fats)
+    },
+    mascot: selectedMascot
+  };
+
+  localStorage.setItem('macroday_profile', JSON.stringify(profile));
+
+  const msg = document.getElementById('profile-confirmation');
+  msg.classList.remove('hidden');
+  setTimeout(() => msg.classList.add('hidden'), 3000);
+}
+
+function getProfile() {
+  return JSON.parse(localStorage.getItem('macroday_profile') || 'null');
+}
+
+/* ─── Populate profile form with saved values on load ───────────────────── */
+
+function loadProfileForm() {
+  const profile = getProfile();
+  if (!profile) return;
+
+  document.getElementById('target-calories').value = profile.targets.calories;
+  document.getElementById('target-protein').value  = profile.targets.protein;
+  document.getElementById('target-fiber').value    = profile.targets.fiber;
+  document.getElementById('target-carbs').value    = profile.targets.carbs;
+  document.getElementById('target-fats').value     = profile.targets.fats;
+
+  selectedGoal = profile.goal;
+  document.querySelectorAll('.goal-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.goal === profile.goal);
+  });
+
+  selectedMascot = profile.mascot;
+  document.querySelectorAll('.mascot-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.mascot === profile.mascot);
+  });
+}
+
+/* ─── Init ───────────────────────────────────────────────────────────────── */
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadProfileForm();
+  // Routing will be added in step 4; for now always show profile screen
+  showScreen('screen-profile');
+});
