@@ -1,0 +1,148 @@
+# Process Notes
+
+## /scope
+
+### How the idea evolved
+Started as a standard "log meals, track calories" app. Through the brain dump, revealed a strong personal motivation: the post-workout moment — tired, need protein fast. Then a major pivot emerged: the learner doesn't want a logging app at all. They want a planning-first app with just two touchpoints a day (morning + night). This fundamentally changed the concept from reactive tracker to proactive planner.
+
+### Pushback received and response
+Pushed hard on scope: photo/image macro analysis, post-workout recipe flow, sweet treat suggestions, and catch-up logic were all present. Learner made the right cut — dropped photo analysis (too complex for hackathon), post-workout specific flow, and sweet treats. Kept the core two-touchpoint loop cleanly.
+
+### References that resonated
+Welling resonated most — the "remaining macros" framing is the right mental model. But learner was clear: "it's a lot more different" — theirs is planning-first, not logging-first.
+
+### Deepening rounds
+Zero deepening rounds — learner moved decisively to scope generation once the core flow was clear. Direct and focused, as predicted in the learner profile. The conversation gave enough richness without extra rounds.
+
+### Active shaping
+Learner drove almost every key decision: the post-workout use case, the "two touchpoints only" philosophy, the no-guilt end-of-day framing, the manual macro entry decision (over photo analysis). The most surprising contribution was the "fake diet people" insight — a real behavioral observation that shaped the non-judgmental tone of the whole app. Learner also unprompted added the frontend priority: "do a better job at frontend, that's what users get impressed right" — this is now a named priority in the scope doc.
+
+## /prd
+
+### What changed vs scope
+- **Macros expanded:** Scope had calories, protein, fiber. PRD adds carbs and fats — learner added these mid-conversation without prompting.
+- **Time-aware routing added:** Not in scope at all. Learner introduced this organically when asked what happens after setup. Full four-window routing (morning / afternoon / night / sleep screen) emerged from one question.
+- **Afternoon path clarified:** If morning was missed, user gets the full morning check-in form — same three fields, same analysis, same snack suggestions.
+- **Snack suggestions made interactive:** Scope said "suggestions." PRD specifies tapping adds to a Snacks section and macro rings update live. Learner specified this directly.
+- **Night check-in deepened significantly:** Scope described it at surface level. PRD now has two explicit paths, tick-box confirmation with conditional logic for unticked/skipped items, affirmation cards for skips, and the no-morning-log edge case.
+- **Calendar + streak added:** Not in scope. Learner introduced mid-conversation. Calendar shows ✓/✗ per day; streak counter shows consecutive goal days. Kept after scope-guard conversation.
+- **Mascot character established:** Emerged from the affirmation card discussion. Learner decided it's a consistent character across all emotional touchpoints. Will be designed in Canva.
+- **Sleep screen added:** 12:01am–5am window with mascot sleeping in bed. Learner added this detail unprompted.
+
+### "What if" moments that surprised them
+- The 12pm–6pm gap: learner had defined morning and "afternoon as 6pm–12am" initially, leaving a dead zone. Needed prompting to identify the afternoon missed-morning window.
+- Re-open during morning window: learner hadn't considered what happens when they open the app a second time. Quickly added view mode + update prompt.
+- First open at night with no morning log: learner immediately knew the right answer ("you didn't plan today — want to log what you actually ate?") — good instincts.
+- Skipped meals in Path A: the tick-box flow branching into "what did you actually eat?" vs "did you skip?" and the affirmation card for skips was a genuine elaboration the learner built out on the spot.
+
+### Pushback and strong opinions
+- Calendar: scope-guarded it as a potential cut. Learner pushed back clearly — "I want to add it so the user sees the actual days they are consistent." Kept.
+- Mascot: learner was clear this should be a consistent character throughout. Also immediately volunteered to design it in Canva.
+- Streak: learner asked "can we add a streak or does it take time?" — framed as a question rather than a demand. Confirmed it was a small addition and they agreed to include it.
+
+### Scope guard outcomes
+- Calendar/streak: flagged as new feature. Learner kept it — justified by consistency visualization.
+- Photo macro analysis, post-workout flow, sweet treats, social features: all held from scope. No pressure to re-add any of these.
+
+### Deepening rounds
+Zero deepening rounds — learner chose to proceed directly to PRD after mandatory questions. However, the mandatory question phase was substantive: every question produced new detail, several produced features not in the scope doc at all. The learner was adding richness without needing extra prompting rounds.
+
+### Active shaping
+Learner was highly generative throughout. Key moments where they drove requirements:
+- Introduced time-aware routing entirely on their own when asked "what happens after setup?"
+- Added carbs and fats to the macro tracking mid-conversation
+- Designed the full night check-in branching logic including affirmation cards for skips
+- Added the sleep screen mascot detail (in bed, centered)
+- Pushed back on cutting the calendar and streak
+- Volunteered the mascot design plan before being asked
+- Asked about Cloud Run deployment — redirected to /spec, but shows they're already thinking ahead about the full product
+
+## /onboard
+
+- **Technical experience:** Python, GCP (Cloud Run, API keys), professional AI agent builder. Intermediate-to-experienced level. Has used Claude via prompting but not yet as a coding agent.
+- **Learning goals:** Build an app entirely independently — wants a repeatable end-to-end process.
+- **Creative sensibility:** Personal itch — wants to build a diet app for themselves. Practical, functional motivation.
+- **Prior SDD experience:** Informal — writes down steps before coding. The instinct is there; the structure is new.
+- **Energy/engagement:** Direct and focused. Knows what they want. Likely to move fast once they're in the flow.
+
+## /checklist
+
+### Build preferences chosen
+- **Mode:** Step-by-step — one item per `/build` session, `/clear` between each
+- **Comprehension checks:** Yes — learner's reasoning: "asking questions can make us clear on what we're building every session"
+- **Verification:** Yes — per item, learner runs app and confirms before moving on
+- **Git:** Commit after each item
+- **Check-in cadence:** Balanced — brief explanation + verify + move on
+
+### Sequencing decisions
+- Learner deferred entirely to agent on sequencing: "i don't know you pick"
+- Key sequencing rationale explained and accepted: Claude API endpoint goes second (riskiest piece, build early to catch problems while there's still time to pivot)
+- Profile screen goes third because every other screen reads from profile data
+- SPA routing goes fourth to wire all 9 screens before building their content
+
+### Item count and time estimate
+- 13 items total (including Devpost submission as item 13)
+- Estimated 15-30 minutes per item → ~3.5–6.5 hours total build time
+- Appropriate for an intermediate developer moving at balanced pace
+
+### Submission planning
+- Railway deployment confirmed as item 12 — learner already created Railway account and GitHub repo (MacroDay) before checklist generation
+- Hero screenshot identified: Evil Vilo ragebait affirmation card on morning results screen
+- Submission tagline drafted: "Plan your macros in the morning. Check in once at night. Let Milo cheer you on — or let Evil Vilo roast you."
+- Learner asked for agent's take on wow moment rather than naming one themselves — shows trust in agent judgment
+
+### Active shaping
+- Minimal active shaping in this phase — learner deferred on sequencing and all preference questions were quick agreements
+- One genuine engagement: learner paused mid-session to register Railway account and create GitHub repo — came back to confirm both were done before continuing
+- Learner asked a practical question about Railway setup (whether to create a project now) — shows forward-thinking about the deployment pipeline
+
+### Deepening rounds
+- Zero deepening rounds — learner chose to proceed directly to checklist generation after mandatory questions
+- Checklist items are granular enough (13 items, all with 5-field format) that no deepening was needed
+
+## /build
+
+### Step 1: Project scaffold — FastAPI serving static files locally
+
+- Built: `main.py` with FastAPI, two StaticFiles mounts (`/static`, `/assets`), `GET /` returning `index.html`. Created `static/index.html` (placeholder), `style.css`, `app.js`, `analyze.js`, `calendar.js` (all empty). Created `requirements.txt`, `Procfile`, `.env`. Moved mascot PNGs from root into `assets/`.
+- Verification: Learner confirmed `http://localhost:8000` shows "MacroDay" heading; mascot image loads at `/assets/Milo_Good.png`. No console errors.
+- Comprehension check: "Why two separate `app.mount()` calls?" — answered correctly: two directories, two mounts.
+- Notes: Learner noted UI will be improved later — confirmed step 10 is the polish pass.
+
+## /spec
+
+### Technical decisions made
+
+- **Stack:** FastAPI (Python) + vanilla HTML/CSS/JS + Railway (single service) + localStorage. Learner chose HTML/CSS over React — comfort over stretch on the frontend. FastAPI was a fast choice (had used it before or was comfortable with Python). Railway chosen over GCP Cloud Run because it's simpler for a demo.
+- **Single service:** FastAPI serves both the static frontend and the API. Eliminates CORS issues and two-service Railway complexity.
+- **Single `/api/analyze` endpoint:** One endpoint handles morning, night, and snack re-calculation. Mode field switches Claude's analysis type.
+- **Claude Haiku 4.5:** Chosen for speed and cost. Fractions of a cent per request. Perfect for structured nutrition JSON output.
+- **Vague input → clarification:** Claude returns `needs_clarification: true` instead of guessing from vague descriptions. Learner was decisive: "we can't guess the macros based on that."
+- **Snack loop:** After each snack added, rings update and a new suggestion appears. "Done" button closes the loop. Learner specified both behaviors in one answer.
+- **Calendar threshold:** 90% average across all 5 macros = ✓ (not all-5-individually). Learner chose average, then added the day-detail popup (tapping a day shows all 5 macro stats) unprompted.
+
+### Two mascots — the biggest creative decision
+
+- Learner introduced Milo (good) and Evil Vilo (bad) mid-conversation — not in PRD at all. This became a first-class architectural component.
+- Vilo is not just edgy — learner specified "genuinely harsh" and introduced the **ragebait** concept themselves. Claude's system prompt for Vilo mode will be explicitly instructed to be provocative and dismissive.
+- Mascot toggle lives in profile settings (localStorage). Both PNG assets (`Milo_Good.png`, `Vilo_Evil.png`) already existed in the project before /spec started.
+- Affirmation cards now appear on: morning results, night skipped meals, night no-log edge case, end-of-day summary, sleep screen.
+
+### Confidence vs uncertainty
+
+- **Confident:** Stack choices, deployment, localStorage schema, mascot concept, ragebait tone for Vilo
+- **Deferred:** Macro ring rendering (CSS conic-gradient vs SVG — noted as open issue), Web Speech API fallback for non-Chrome browsers
+
+### Deepening rounds
+
+- One deepening round (4 questions). All 4 produced spec-level decisions that would have caused build stalls:
+  1. Vague input handling → clarification, not estimation
+  2. Vilo's tone ceiling → ragebait, genuinely harsh (learner introduced ragebait concept)
+  3. Snack suggestion loop → refreshes after each addition, Done button to close
+  4. Calendar threshold → 90% average + tap-to-see-stats (learner added day detail popup)
+
+### Active shaping
+
+- Learner drove almost every major decision: HTML/CSS over React, single Railway service, Milo/Vilo duality, ragebait as a design principle for Vilo, day-detail popup on calendar.
+- Pushed back on nothing — all proposals landed without friction.
+- Most surprising contribution: introducing "ragebait" as an explicit design pattern for Vilo's affirmation cards. This came from the learner, not from any prompting.
