@@ -193,14 +193,27 @@ async function submitMorning() {
 
   const analyzeBtn = document.getElementById('analyze-btn');
   const loadingEl  = document.getElementById('morning-loading');
+  const clarifEl   = document.getElementById('morning-clarification');
+
   analyzeBtn.disabled = true;
   loadingEl.classList.remove('hidden');
+  if (clarifEl) clarifEl.classList.add('hidden');
 
   try {
     const result = await callAnalyze({ meals, targets: profile.targets, mode: 'morning', mascot: profile.mascot });
-    window._morningResult = { result, meals };
     loadingEl.classList.add('hidden');
+
+    if (result.needs_clarification) {
+      analyzeBtn.disabled = false;
+      if (clarifEl) {
+        clarifEl.textContent = result.clarification_message;
+        clarifEl.classList.remove('hidden');
+      }
+      return;
+    }
+
     showScreen('screen-morning-result');
+    renderMorningResults(result, meals, profile);
   } catch (err) {
     loadingEl.classList.add('hidden');
     analyzeBtn.disabled = false;

@@ -117,10 +117,89 @@
 
       <button class="btn-primary" id="analyze-btn" onclick="submitMorning()" disabled>Analyze My Plan</button>
 
+      <div id="morning-clarification" class="clarification-msg hidden"></div>
       <div id="morning-loading" class="loading-state hidden">Analyzing your plan…</div>
     </div>
   </section>
-  <section id="screen-morning-result"><div class="screen-content"><h2>Morning Results</h2></div></section>
+  <!-- SCREEN: Morning Results -->
+  <section id="screen-morning-result">
+    <div class="screen-content">
+      <h2>Your Plan</h2>
+      <p class="subtitle">Here's how your meals stack up against your targets.</p>
+
+      <!-- Macro rings -->
+      <div class="rings-grid">
+
+        <div class="ring-item" id="ring-calories">
+          <svg viewBox="0 0 36 36" class="macro-ring">
+            <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
+            <circle class="ring-fill ring-fill-calories" cx="18" cy="18" r="15.9"
+                    stroke-dasharray="0 100" stroke-dashoffset="25"/>
+          </svg>
+          <div class="ring-name">Calories</div>
+          <div class="ring-pct" id="ring-calories-pct">0%</div>
+          <div class="ring-rem" id="ring-calories-rem">—kcal left</div>
+        </div>
+
+        <div class="ring-item" id="ring-protein">
+          <svg viewBox="0 0 36 36" class="macro-ring">
+            <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
+            <circle class="ring-fill ring-fill-protein" cx="18" cy="18" r="15.9"
+                    stroke-dasharray="0 100" stroke-dashoffset="25"/>
+          </svg>
+          <div class="ring-name">Protein</div>
+          <div class="ring-pct" id="ring-protein-pct">0%</div>
+          <div class="ring-rem" id="ring-protein-rem">—g left</div>
+        </div>
+
+        <div class="ring-item" id="ring-fiber">
+          <svg viewBox="0 0 36 36" class="macro-ring">
+            <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
+            <circle class="ring-fill ring-fill-fiber" cx="18" cy="18" r="15.9"
+                    stroke-dasharray="0 100" stroke-dashoffset="25"/>
+          </svg>
+          <div class="ring-name">Fiber</div>
+          <div class="ring-pct" id="ring-fiber-pct">0%</div>
+          <div class="ring-rem" id="ring-fiber-rem">—g left</div>
+        </div>
+
+        <div class="ring-item" id="ring-carbs">
+          <svg viewBox="0 0 36 36" class="macro-ring">
+            <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
+            <circle class="ring-fill ring-fill-carbs" cx="18" cy="18" r="15.9"
+                    stroke-dasharray="0 100" stroke-dashoffset="25"/>
+          </svg>
+          <div class="ring-name">Carbs</div>
+          <div class="ring-pct" id="ring-carbs-pct">0%</div>
+          <div class="ring-rem" id="ring-carbs-rem">—g left</div>
+        </div>
+
+        <div class="ring-item" id="ring-fats">
+          <svg viewBox="0 0 36 36" class="macro-ring">
+            <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
+            <circle class="ring-fill ring-fill-fats" cx="18" cy="18" r="15.9"
+                    stroke-dasharray="0 100" stroke-dashoffset="25"/>
+          </svg>
+          <div class="ring-name">Fats</div>
+          <div class="ring-pct" id="ring-fats-pct">0%</div>
+          <div class="ring-rem" id="ring-fats-rem">—g left</div>
+        </div>
+
+      </div>
+
+      <!-- AI feedback -->
+      <div class="feedback-section">
+        <p class="feedback-text" id="morning-feedback"></p>
+      </div>
+
+      <!-- Mascot affirmation card -->
+      <div class="mascot-card">
+        <img id="mascot-img" src="" alt="mascot" class="mascot-card-img"/>
+        <p id="mascot-message" class="mascot-card-msg"></p>
+      </div>
+
+    </div>
+  </section>
   <section id="screen-midday"><div class="screen-content"><h2>Mid-Day View</h2></div></section>
   <section id="screen-afternoon"><div class="screen-content"><h2>Afternoon</h2></div></section>
   <section id="screen-night"><div class="screen-content"><h2>Night Check-In</h2></div></section>
