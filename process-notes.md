@@ -102,6 +102,35 @@ Learner was highly generative throughout. Key moments where they drove requireme
 
 ## /build
 
+### Step 5: Morning check-in form — meal input + voice
+
+- What was built: Full `#screen-morning` with three meal text areas (Breakfast, Lunch, Dinner), mic buttons per field, `updateAnalyzeBtn()` using `.some()` to enable the submit button when any field has content, `startVoice()` using `webkitSpeechRecognition` with listening indicator and pulse animation, `submitMorning()` async function that POSTs to `/api/analyze` with loading state, stores result in `window._morningResult`, and navigates to `screen-morning-result`. `callAnalyze(payload)` added to `analyze.js` as the bare fetch wrapper.
+- Verification: Forced hour to 7 to reach morning screen. Typed meal in Breakfast field — button activated. Clicked "Analyze My Plan" — POST to `/api/analyze` confirmed visible in Network tab. Loading state appeared.
+- Comprehension check: "What condition enables the 'Analyze My Plan' button?" — answered correctly: "At least one field has text" (`.some()` not `.every()`).
+- Issues: None. Hour restored to `new Date().getHours()` after testing.
+
+### Step 4: SPA screen architecture + time-aware routing
+
+- What was built: `routeOnLoad()` — checks profile, runs day rollover, routes to correct screen by hour. `handleDayRollover()` — pushes yesterday's data to `macroday_history` and resets `macroday_today` on new day. `averageMacroPercent()` — shared 90% threshold utility. `saveProfile()` now routes to time-appropriate screen after saving. `DOMContentLoaded` calls `routeOnLoad()` instead of always forcing profile screen.
+- Verification: Tested all four time windows by hardcoding hour value. Hour 14 → `screen-afternoon`, hour 20 → `screen-night`, hour 2 → `screen-sleep`. All correct. Restored `new Date().getHours()` after testing.
+- Comprehension check: "What does `routeOnLoad()` check first?" — answered correctly: whether `macroday_profile` exists in localStorage (B).
+- Issues: None.
+- Notes: Learner correctly noted that screens only show placeholder headings for now — content gets built in steps 5–10.
+
+### Step 3: Profile screen — goal selector, macro targets, mascot toggle
+
+- What was built: Full profile screen with goal buttons (Bulking/Cutting/General Health), five macro number inputs, mascot toggle with image previews (Milo/Vilo), Save Profile button, confirmation message. `saveProfile()` validates fields and writes `macroday_profile` to localStorage. `loadProfileForm()` re-populates form on return visits. CSS: nav bar, goal buttons with active state, mascot toggle cards, macro input rows, confirmation message styling.
+- Verification: Learner confirmed all UI elements visible. Saved profile `{"goal":"cutting","targets":{"calories":2000,"protein":50,"fiber":20,"carbs":100,"fats":40},"mascot":"milo"}` — correct structure confirmed in DevTools localStorage.
+- Comprehension check: "Where does profile data get stored?" — answered correctly: browser's localStorage (B).
+- Issues: None.
+
+### Step 2: POST /api/analyze — Claude Haiku integration
+
+- Built: `AnalyzeRequest` Pydantic model (meals, targets, mode, mascot). Dynamic system prompt switching between Milo (warm/encouraging) and Vilo (ragebait/harsh) voices. Vague-input detection returns `needs_clarification: true`. Calls `claude-haiku-4-5-20251001` with `max_tokens=1000`, `temperature=0.7`. Parses JSON response and returns all fields.
+- Verification: Tested with vague meals — Vilo returned "embarrassingly vague" clarification message. Tested with specific quantities — returned full macro JSON (calories: 2185, protein: 168, fiber: 11, carbs: 289, fats: 52) with gaps calculated. Both paths confirmed working.
+- Comprehension check: skipped this session due to extended debugging.
+- Issues: Route wasn't appearing in FastAPI docs due to Pydantic schema generation issue with `Optional[list[str]]`. Fixed with `List[str] = Field(default_factory=list)`. Also required killing stale uvicorn processes to get clean reload.
+
 ### Step 1: Project scaffold — FastAPI serving static files locally
 
 - Built: `main.py` with FastAPI, two StaticFiles mounts (`/static`, `/assets`), `GET /` returning `index.html`. Created `static/index.html` (placeholder), `style.css`, `app.js`, `analyze.js`, `calendar.js` (all empty). Created `requirements.txt`, `Procfile`, `.env`. Moved mascot PNGs from root into `assets/`.
