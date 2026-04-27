@@ -251,3 +251,90 @@ h2 {
 .hidden {
   display: none;
 }
+
+/* ─── Morning check-in ───────────────────────────────────────────────────── */
+
+.meal-input-group {
+  margin-bottom: 1.25rem;
+}
+
+.meal-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+}
+
+.meal-label-row .form-label {
+  margin-bottom: 0;
+}
+
+.meal-textarea {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border: 1.5px solid #d0d5dd;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: #1a1a2e;
+  background: #fff;
+  resize: vertical;
+  min-height: 68px;
+  transition: border-color 0.15s;
+  line-height: 1.4;
+}
+
+.meal-textarea:focus {
+  outline: none;
+  border-color: #7ed6a3;
+}
+
+.mic-btn {
+  background: none;
+  border: 1.5px solid #d0d5dd;
+  border-radius: 8px;
+  padding: 0.3rem 0.55rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  line-height: 1;
+}
+
+.mic-btn:hover {
+  border-color: #7ed6a3;
+  background: #f0faf4;
+}
+
+.mic-btn.listening {
+  border-color: #e85555;
+  background: #fff0f0;
+  animation: mic-pulse 1s infinite;
+}
+
+@keyframes mic-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.45; }
+}
+
+.voice-indicator {
+  display: inline-block;
+  font-size: 0.9rem;
+  color: #e85555;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  padding: 0.45rem 0.75rem;
+  background: #fff0f0;
+  border-radius: 8px;
+}
+
+.loading-state {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: #f0faf4;
+  border: 1.5px solid #7ed6a3;
+  border-radius: 10px;
+  color: #1a6b45;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-align: center;
+}

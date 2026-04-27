@@ -80,8 +80,46 @@
     </div>
   </section>
 
-  <!-- Placeholder screens — will be built in later steps -->
-  <section id="screen-morning"><div class="screen-content"><h2>Morning Check-In</h2></div></section>
+  <!-- SCREEN: Morning Check-In -->
+  <section id="screen-morning">
+    <div class="screen-content">
+      <h2>Plan Your Day</h2>
+      <p class="subtitle">What are you planning to eat today? Type or speak each meal.</p>
+
+      <!-- Breakfast -->
+      <div class="meal-input-group">
+        <div class="meal-label-row">
+          <label class="form-label" for="meal-breakfast">Breakfast</label>
+          <button class="mic-btn" id="mic-breakfast" onclick="startVoice('meal-breakfast','mic-breakfast')" title="Voice input (Chrome only)">🎤</button>
+        </div>
+        <textarea id="meal-breakfast" class="meal-textarea" placeholder="e.g. 2 eggs, 100g oats, 1 banana…" rows="2" oninput="updateAnalyzeBtn()"></textarea>
+      </div>
+
+      <!-- Lunch -->
+      <div class="meal-input-group">
+        <div class="meal-label-row">
+          <label class="form-label" for="meal-lunch">Lunch</label>
+          <button class="mic-btn" id="mic-lunch" onclick="startVoice('meal-lunch','mic-lunch')" title="Voice input (Chrome only)">🎤</button>
+        </div>
+        <textarea id="meal-lunch" class="meal-textarea" placeholder="e.g. 200g chicken breast, rice, salad…" rows="2" oninput="updateAnalyzeBtn()"></textarea>
+      </div>
+
+      <!-- Dinner -->
+      <div class="meal-input-group">
+        <div class="meal-label-row">
+          <label class="form-label" for="meal-dinner">Dinner</label>
+          <button class="mic-btn" id="mic-dinner" onclick="startVoice('meal-dinner','mic-dinner')" title="Voice input (Chrome only)">🎤</button>
+        </div>
+        <textarea id="meal-dinner" class="meal-textarea" placeholder="e.g. salmon, sweet potato…" rows="2" oninput="updateAnalyzeBtn()"></textarea>
+      </div>
+
+      <div id="voice-listening" class="voice-indicator hidden">🎤 Listening…</div>
+
+      <button class="btn-primary" id="analyze-btn" onclick="submitMorning()" disabled>Analyze My Plan</button>
+
+      <div id="morning-loading" class="loading-state hidden">Analyzing your plan…</div>
+    </div>
+  </section>
   <section id="screen-morning-result"><div class="screen-content"><h2>Morning Results</h2></div></section>
   <section id="screen-midday"><div class="screen-content"><h2>Mid-Day View</h2></div></section>
   <section id="screen-afternoon"><div class="screen-content"><h2>Afternoon</h2></div></section>

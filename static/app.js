@@ -142,6 +142,72 @@ function loadProfileForm() {
   });
 }
 
+/* ─── Morning check-in ───────────────────────────────────────────────────── */
+
+function updateAnalyzeBtn() {
+  const hasContent = ['meal-breakfast', 'meal-lunch', 'meal-dinner']
+    .some(id => document.getElementById(id).value.trim().length > 0);
+  document.getElementById('analyze-btn').disabled = !hasContent;
+}
+
+function startVoice(textareaId, btnId) {
+  if (!('webkitSpeechRecognition' in window)) {
+    alert('Voice input requires Chrome or Edge.');
+    return;
+  }
+  const recognition = new webkitSpeechRecognition();
+  recognition.continuous = false;
+  recognition.interimResults = false;
+
+  const listeningEl = document.getElementById('voice-listening');
+  const btn = document.getElementById(btnId);
+
+  recognition.onstart = () => {
+    listeningEl.classList.remove('hidden');
+    btn.classList.add('listening');
+  };
+  recognition.onresult = (e) => {
+    const transcript = e.results[0][0].transcript;
+    const textarea = document.getElementById(textareaId);
+    textarea.value += (textarea.value ? ' ' : '') + transcript;
+    updateAnalyzeBtn();
+  };
+  recognition.onend = () => {
+    listeningEl.classList.add('hidden');
+    btn.classList.remove('listening');
+  };
+  recognition.onerror = () => {
+    listeningEl.classList.add('hidden');
+    btn.classList.remove('listening');
+  };
+
+  recognition.start();
+}
+
+async function submitMorning() {
+  const breakfast = document.getElementById('meal-breakfast').value.trim();
+  const lunch     = document.getElementById('meal-lunch').value.trim();
+  const dinner    = document.getElementById('meal-dinner').value.trim();
+  const profile   = getProfile();
+  const meals     = { breakfast, lunch, dinner, snacks: [] };
+
+  const analyzeBtn = document.getElementById('analyze-btn');
+  const loadingEl  = document.getElementById('morning-loading');
+  analyzeBtn.disabled = true;
+  loadingEl.classList.remove('hidden');
+
+  try {
+    const result = await callAnalyze({ meals, targets: profile.targets, mode: 'morning', mascot: profile.mascot });
+    window._morningResult = { result, meals };
+    loadingEl.classList.add('hidden');
+    showScreen('screen-morning-result');
+  } catch (err) {
+    loadingEl.classList.add('hidden');
+    analyzeBtn.disabled = false;
+    alert('Analysis failed — check your connection and try again.');
+  }
+}
+
 /* ─── Init ───────────────────────────────────────────────────────────────── */
 
 document.addEventListener('DOMContentLoaded', () => {
