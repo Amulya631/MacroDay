@@ -58,6 +58,7 @@ function routeOnLoad() {
     showScreen(isToday && today.morning_logged ? 'screen-midday' : 'screen-afternoon');
   } else if (hour >= 18 && hour < 24) {
     showScreen('screen-night');
+    initNightScreen();
   } else {
     showScreen('screen-sleep');
   }
@@ -150,7 +151,7 @@ function updateAnalyzeBtn() {
   document.getElementById('analyze-btn').disabled = !hasContent;
 }
 
-function startVoice(textareaId, btnId) {
+function startVoice(textareaId, btnId, listeningElId = 'voice-listening') {
   if (!('webkitSpeechRecognition' in window)) {
     alert('Voice input requires Chrome or Edge.');
     return;
@@ -159,26 +160,26 @@ function startVoice(textareaId, btnId) {
   recognition.continuous = false;
   recognition.interimResults = false;
 
-  const listeningEl = document.getElementById('voice-listening');
+  const listeningEl = document.getElementById(listeningElId);
   const btn = document.getElementById(btnId);
 
   recognition.onstart = () => {
-    listeningEl.classList.remove('hidden');
-    btn.classList.add('listening');
+    if (listeningEl) listeningEl.classList.remove('hidden');
+    if (btn) btn.classList.add('listening');
   };
   recognition.onresult = (e) => {
     const transcript = e.results[0][0].transcript;
     const textarea = document.getElementById(textareaId);
     textarea.value += (textarea.value ? ' ' : '') + transcript;
-    updateAnalyzeBtn();
+    textarea.dispatchEvent(new Event('input'));
   };
   recognition.onend = () => {
-    listeningEl.classList.add('hidden');
-    btn.classList.remove('listening');
+    if (listeningEl) listeningEl.classList.add('hidden');
+    if (btn) btn.classList.remove('listening');
   };
   recognition.onerror = () => {
-    listeningEl.classList.add('hidden');
-    btn.classList.remove('listening');
+    if (listeningEl) listeningEl.classList.add('hidden');
+    if (btn) btn.classList.remove('listening');
   };
 
   recognition.start();
@@ -219,6 +220,289 @@ async function submitMorning() {
     analyzeBtn.disabled = false;
     alert('Analysis failed — check your connection and try again.');
   }
+}
+
+/* ─── Night check-in ─────────────────────────────────────────────────────── */
+
+let nightState = null;
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function initNightScreen() {
+  const today = JSON.parse(localStorage.getItem('macroday_today') || '{}');
+  const profile = getProfile();
+
+  nightState = {
+    phase: 'ticking',
+    path: 'a',
+    morningLogged: !!(today.morning_logged),
+    meals: today.meals || {},
+    mealKeys: [],
+    ticked: {},
+    resolved: {},
+    hasInteracted: false
+  };
+
+  const noLogEl  = document.getElementById('night-no-log');
+  const mainEl   = document.getElementById('night-main');
+
+  if (!nightState.morningLogged) {
+    noLogEl.classList.remove('hidden');
+    mainEl.classList.add('hidden');
+    const mascotImg = document.getElementById('night-no-log-mascot-img');
+    const mascotMsg = document.getElementById('night-no-log-mascot-msg');
+    if (mascotImg) mascotImg.src = profile.mascot === 'vilo' ? '/assets/Vilo_Evil.png' : '/assets/Milo_Good.png';
+    if (mascotMsg) mascotMsg.textContent = profile.mascot === 'vilo'
+      ? "You didn't plan today. Sloppy. Log what you actually ate so we can assess the damage."
+      : "It's okay! Every day is a chance to learn. Log what you ate and see how you did.";
+    ['night-nolog-breakfast', 'night-nolog-lunch', 'night-nolog-dinner'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    updateNightNoLogBtn();
+  } else {
+    noLogEl.classList.add('hidden');
+    mainEl.classList.remove('hidden');
+    const meals = nightState.meals;
+    if (meals.breakfast) nightState.mealKeys.push({ key: 'breakfast', label: 'Breakfast', value: meals.breakfast });
+    if (meals.lunch)     nightState.mealKeys.push({ key: 'lunch',     label: 'Lunch',     value: meals.lunch });
+    if (meals.dinner)    nightState.mealKeys.push({ key: 'dinner',    label: 'Dinner',    value: meals.dinner });
+    if (Array.isArray(meals.snacks)) {
+      meals.snacks.forEach((s, i) => nightState.mealKeys.push({ key: `snack_${i}`, label: 'Snack', value: s }));
+    }
+    nightState.mealKeys.forEach(m => { nightState.ticked[m.key] = false; });
+    selectNightPath('a');
+    renderNightTickList();
+    const submitA = document.getElementById('night-submit-a');
+    const seeRes  = document.getElementById('night-see-results');
+    if (submitA) { submitA.disabled = true; submitA.classList.remove('hidden'); }
+    if (seeRes)  seeRes.classList.add('hidden');
+    ['night-b-breakfast', 'night-b-lunch', 'night-b-dinner'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+  }
+}
+
+function selectNightPath(path) {
+  nightState.path = path;
+  document.getElementById('path-a-btn').classList.toggle('active', path === 'a');
+  document.getElementById('path-b-btn').classList.toggle('active', path === 'b');
+  document.getElementById('night-path-a').classList.toggle('hidden', path !== 'a');
+  document.getElementById('night-path-b').classList.toggle('hidden', path === 'a');
+}
+
+function renderNightTickList() {
+  const container = document.getElementById('night-tick-list');
+  if (!container) return;
+  if (nightState.mealKeys.length === 0) {
+    container.innerHTML = '<p class="path-hint" style="color:#999">No meals logged from this morning.</p>';
+    return;
+  }
+  container.innerHTML = nightState.mealKeys.map(m => `
+    <div class="tick-item" id="tick-item-${m.key}">
+      <label class="tick-label">
+        <input type="checkbox" class="tick-checkbox" id="tick-${m.key}" onchange="onTickChange('${m.key}')">
+        <span class="tick-meal-label">${m.label}</span>
+        <span class="tick-meal-value">"${escapeHtml(m.value)}"</span>
+      </label>
+      <div class="tick-expansion hidden" id="expansion-${m.key}">
+        <div class="expansion-field" id="expansion-field-${m.key}">
+          <div class="meal-label-row" style="margin-bottom:0.4rem">
+            <label class="form-label" style="margin-bottom:0">What did you actually eat?</label>
+            <button class="mic-btn" id="expansion-mic-${m.key}"
+              onclick="startVoice('expansion-text-${m.key}','expansion-mic-${m.key}','night-voice-indicator')">🎤</button>
+          </div>
+          <textarea id="expansion-text-${m.key}" class="meal-textarea" rows="2"
+            placeholder="e.g. grilled chicken 150g…"></textarea>
+          <button class="btn-resolve" onclick="resolveItemAte('${m.key}')">Confirm what I ate</button>
+        </div>
+        <button class="btn-skip-meal" id="expansion-skip-${m.key}" onclick="resolveItemSkipped('${m.key}')">I skipped this meal</button>
+        <div class="skip-mascot-card hidden" id="skip-card-${m.key}">
+          <img class="mascot-card-img" id="skip-mascot-img-${m.key}" src="" alt="mascot">
+          <div class="skip-mascot-body">
+            <p class="mascot-card-msg" id="skip-mascot-msg-${m.key}"></p>
+            <button class="btn-secondary" onclick="dismissSkipCard('${m.key}')">Got it</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function onTickChange(key) {
+  nightState.hasInteracted = true;
+  nightState.ticked[key] = document.getElementById(`tick-${key}`).checked;
+  const submitA = document.getElementById('night-submit-a');
+  if (submitA) submitA.disabled = false;
+}
+
+function submitPathA() {
+  nightState.phase = 'resolving';
+  const submitA = document.getElementById('night-submit-a');
+  if (submitA) submitA.classList.add('hidden');
+
+  const unticked = nightState.mealKeys.filter(m => !nightState.ticked[m.key]);
+
+  if (unticked.length === 0) {
+    nightState.mealKeys.forEach(m => { nightState.resolved[m.key] = m.value; });
+    const seeRes = document.getElementById('night-see-results');
+    if (seeRes) { seeRes.classList.remove('hidden'); seeRes.disabled = false; }
+    return;
+  }
+
+  nightState.mealKeys.filter(m => nightState.ticked[m.key]).forEach(m => {
+    nightState.resolved[m.key] = m.value;
+  });
+
+  unticked.forEach(m => {
+    const expansion = document.getElementById(`expansion-${m.key}`);
+    if (expansion) expansion.classList.remove('hidden');
+  });
+
+  const seeRes = document.getElementById('night-see-results');
+  if (seeRes) { seeRes.classList.remove('hidden'); seeRes.disabled = true; }
+}
+
+function resolveItemAte(key) {
+  const text = document.getElementById(`expansion-text-${key}`).value.trim();
+  if (!text) {
+    alert('Please enter what you ate, or click "I skipped this meal".');
+    return;
+  }
+  nightState.resolved[key] = text;
+  markTickItemResolved(key, text);
+  checkAllNightResolved();
+}
+
+function resolveItemSkipped(key) {
+  const profile = getProfile();
+  const mascotSrc = profile.mascot === 'vilo' ? '/assets/Vilo_Evil.png' : '/assets/Milo_Good.png';
+  const msg = profile.mascot === 'vilo'
+    ? "Skipped. Bold strategy. Painfully wrong, but bold."
+    : "Sounds like a busy day! Have a glass of water or a refreshing juice.";
+
+  document.getElementById(`skip-mascot-img-${key}`).src = mascotSrc;
+  document.getElementById(`skip-mascot-msg-${key}`).textContent = msg;
+
+  const field   = document.getElementById(`expansion-field-${key}`);
+  const skipBtn = document.getElementById(`expansion-skip-${key}`);
+  if (field)   field.style.display   = 'none';
+  if (skipBtn) skipBtn.style.display = 'none';
+  document.getElementById(`skip-card-${key}`).classList.remove('hidden');
+}
+
+function dismissSkipCard(key) {
+  nightState.resolved[key] = 'skipped';
+  markTickItemResolved(key, '(skipped)');
+  checkAllNightResolved();
+}
+
+function markTickItemResolved(key, displayText) {
+  const expansion = document.getElementById(`expansion-${key}`);
+  if (expansion) expansion.classList.add('hidden');
+  const tickItem = document.getElementById(`tick-item-${key}`);
+  if (tickItem) {
+    tickItem.classList.add('resolved');
+    const badge = document.createElement('div');
+    badge.className = 'resolved-badge';
+    badge.textContent = displayText === '(skipped)' ? '✓ Skipped' : `✓ ${displayText}`;
+    tickItem.appendChild(badge);
+  }
+}
+
+function checkAllNightResolved() {
+  const allResolved = nightState.mealKeys.every(m => nightState.resolved[m.key] !== undefined);
+  if (allResolved) {
+    const seeRes = document.getElementById('night-see-results');
+    if (seeRes) seeRes.disabled = false;
+  }
+}
+
+function updateNightNoLogBtn() {
+  const hasContent = ['night-nolog-breakfast', 'night-nolog-lunch', 'night-nolog-dinner']
+    .some(id => { const el = document.getElementById(id); return el && el.value.trim().length > 0; });
+  const btn = document.getElementById('night-nolog-submit');
+  if (btn) btn.disabled = !hasContent;
+}
+
+async function submitNightNoLog() {
+  const profile   = getProfile();
+  const breakfast = document.getElementById('night-nolog-breakfast').value.trim();
+  const lunch     = document.getElementById('night-nolog-lunch').value.trim();
+  const dinner    = document.getElementById('night-nolog-dinner').value.trim();
+  const meals     = { breakfast, lunch, dinner, snacks: [] };
+
+  const loadingEl = document.getElementById('night-nolog-loading');
+  const submitBtn = document.getElementById('night-nolog-submit');
+  submitBtn.disabled = true;
+  loadingEl.classList.remove('hidden');
+
+  try {
+    const result = await callAnalyze({ meals, targets: profile.targets, mode: 'night', mascot: profile.mascot });
+    loadingEl.classList.add('hidden');
+    saveNightResult(meals, result);
+    showScreen('screen-summary');
+    if (typeof renderSummary === 'function') renderSummary(result, profile);
+  } catch (err) {
+    loadingEl.classList.add('hidden');
+    submitBtn.disabled = false;
+    alert('Analysis failed — check your connection and try again.');
+  }
+}
+
+async function submitNight(path) {
+  const profile = getProfile();
+  let meals, loadingEl, submitBtn;
+
+  if (path === 'b') {
+    const breakfast = document.getElementById('night-b-breakfast').value.trim();
+    const lunch     = document.getElementById('night-b-lunch').value.trim();
+    const dinner    = document.getElementById('night-b-dinner').value.trim();
+    meals     = { breakfast, lunch, dinner, snacks: [] };
+    loadingEl = document.getElementById('night-loading-b');
+    submitBtn = document.getElementById('night-b-submit');
+  } else {
+    meals = { breakfast: '', lunch: '', dinner: '', snacks: [] };
+    nightState.mealKeys.forEach(m => {
+      const val = nightState.resolved[m.key] === 'skipped' ? '' : (nightState.resolved[m.key] || m.value);
+      if (m.key === 'breakfast')          meals.breakfast = val;
+      else if (m.key === 'lunch')         meals.lunch     = val;
+      else if (m.key === 'dinner')        meals.dinner    = val;
+      else if (m.key.startsWith('snack_')) meals.snacks.push(val);
+    });
+    loadingEl = document.getElementById('night-loading-a');
+    submitBtn = document.getElementById('night-see-results');
+  }
+
+  if (submitBtn) submitBtn.disabled = true;
+  if (loadingEl) loadingEl.classList.remove('hidden');
+
+  try {
+    const result = await callAnalyze({ meals, targets: profile.targets, mode: 'night', mascot: profile.mascot });
+    if (loadingEl) loadingEl.classList.add('hidden');
+    saveNightResult(meals, result);
+    showScreen('screen-summary');
+    if (typeof renderSummary === 'function') renderSummary(result, profile);
+  } catch (err) {
+    if (loadingEl) loadingEl.classList.add('hidden');
+    if (submitBtn) submitBtn.disabled = false;
+    alert('Analysis failed — check your connection and try again.');
+  }
+}
+
+function saveNightResult(meals, result) {
+  const todayData = JSON.parse(localStorage.getItem('macroday_today') || '{}');
+  todayData.night_logged   = true;
+  todayData.actual_meals   = meals;
+  todayData.final_analysis = result;
+  localStorage.setItem('macroday_today', JSON.stringify(todayData));
 }
 
 /* ─── Init ───────────────────────────────────────────────────────────────── */

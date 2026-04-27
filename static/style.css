@@ -546,3 +546,178 @@ h2 {
   border-color: #1a1a2e;
   color: #1a1a2e;
 }
+
+/* ─── Night check-in ─────────────────────────────────────────────────────── */
+
+.path-selector {
+  display: flex;
+  gap: 0.65rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.path-btn {
+  flex: 1;
+  min-width: 140px;
+  padding: 0.65rem 1rem;
+  border: 2px solid #d0d5dd;
+  border-radius: 12px;
+  background: #fff;
+  color: #444;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+}
+
+.path-btn:hover {
+  border-color: #7ed6a3;
+  color: #1a1a2e;
+}
+
+.path-btn.active {
+  background: #1a1a2e;
+  border-color: #1a1a2e;
+  color: #7ed6a3;
+}
+
+.path-hint {
+  font-size: 0.88rem;
+  color: #777;
+  margin-bottom: 1.1rem;
+  line-height: 1.45;
+}
+
+/* Tick-box items */
+
+.tick-item {
+  margin-bottom: 0.75rem;
+  border: 1.5px solid #e8ecf0;
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+
+.tick-item.resolved {
+  opacity: 0.65;
+}
+
+.tick-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+}
+
+.tick-checkbox {
+  margin-top: 3px;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  accent-color: #10b981;
+  cursor: pointer;
+}
+
+.tick-meal-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.tick-meal-value {
+  font-size: 0.88rem;
+  color: #666;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+/* Expansion area (shown for unticked items after Submit) */
+
+.tick-expansion {
+  border-top: 1.5px solid #e8ecf0;
+  padding: 0.9rem 1rem;
+  background: #f8f9fb;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.expansion-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.btn-resolve {
+  align-self: flex-start;
+  padding: 0.45rem 1rem;
+  background: #1a1a2e;
+  color: #7ed6a3;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-resolve:hover {
+  background: #2a2a4e;
+}
+
+.btn-skip-meal {
+  align-self: flex-start;
+  padding: 0.4rem 0.85rem;
+  background: transparent;
+  border: 1.5px solid #f59e0b;
+  border-radius: 8px;
+  color: #92400e;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-skip-meal:hover {
+  background: #fffbeb;
+}
+
+/* Inline skip mascot card */
+
+.skip-mascot-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem;
+  background: #fff;
+  border: 1.5px solid #e8ecf5;
+  border-radius: 12px;
+}
+
+.skip-mascot-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.skip-mascot-card .mascot-card-img {
+  width: 52px;
+  height: 52px;
+}
+
+/* Resolved badge */
+
+.resolved-badge {
+  font-size: 0.78rem;
+  color: #10b981;
+  font-weight: 600;
+  padding: 0.3rem 1rem 0.55rem;
+}

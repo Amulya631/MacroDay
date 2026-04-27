@@ -210,7 +210,97 @@
   </section>
   <section id="screen-midday"><div class="screen-content"><h2>Mid-Day View</h2></div></section>
   <section id="screen-afternoon"><div class="screen-content"><h2>Afternoon</h2></div></section>
-  <section id="screen-night"><div class="screen-content"><h2>Night Check-In</h2></div></section>
+  <!-- SCREEN: Night Check-In -->
+  <section id="screen-night">
+    <div class="screen-content">
+
+      <!-- Shared voice indicator (all night paths use this) -->
+      <div id="night-voice-indicator" class="voice-indicator hidden">🎤 Listening…</div>
+
+      <!-- Edge case: no morning log -->
+      <div id="night-no-log" class="hidden">
+        <h2>How'd your day go?</h2>
+        <p class="subtitle">You didn't plan today — want to log what you actually ate?</p>
+        <div class="mascot-card">
+          <img class="mascot-card-img" id="night-no-log-mascot-img" src="" alt="mascot" />
+          <p class="mascot-card-msg" id="night-no-log-mascot-msg"></p>
+        </div>
+        <div class="meal-input-group" style="margin-top:1.5rem">
+          <div class="meal-label-row">
+            <label class="form-label">Breakfast</label>
+            <button class="mic-btn" id="night-nolog-mic-b" onclick="startVoice('night-nolog-breakfast','night-nolog-mic-b','night-voice-indicator')">🎤</button>
+          </div>
+          <textarea id="night-nolog-breakfast" class="meal-textarea" placeholder="e.g. 2 eggs, oats…" rows="2" oninput="updateNightNoLogBtn()"></textarea>
+        </div>
+        <div class="meal-input-group">
+          <div class="meal-label-row">
+            <label class="form-label">Lunch</label>
+            <button class="mic-btn" id="night-nolog-mic-l" onclick="startVoice('night-nolog-lunch','night-nolog-mic-l','night-voice-indicator')">🎤</button>
+          </div>
+          <textarea id="night-nolog-lunch" class="meal-textarea" placeholder="e.g. chicken, rice…" rows="2" oninput="updateNightNoLogBtn()"></textarea>
+        </div>
+        <div class="meal-input-group">
+          <div class="meal-label-row">
+            <label class="form-label">Dinner</label>
+            <button class="mic-btn" id="night-nolog-mic-d" onclick="startVoice('night-nolog-dinner','night-nolog-mic-d','night-voice-indicator')">🎤</button>
+          </div>
+          <textarea id="night-nolog-dinner" class="meal-textarea" placeholder="e.g. salmon, sweet potato…" rows="2" oninput="updateNightNoLogBtn()"></textarea>
+        </div>
+        <button class="btn-primary" id="night-nolog-submit" onclick="submitNightNoLog()" disabled>See how I did</button>
+        <div id="night-nolog-loading" class="loading-state hidden">Analyzing your day…</div>
+      </div>
+
+      <!-- Main night check-in (morning was logged) -->
+      <div id="night-main" class="hidden">
+        <h2>Night Check-In</h2>
+        <p class="subtitle">How did your day actually go?</p>
+
+        <!-- Path selector -->
+        <div class="path-selector">
+          <button class="path-btn active" id="path-a-btn" onclick="selectNightPath('a')">I mostly followed my plan</button>
+          <button class="path-btn" id="path-b-btn" onclick="selectNightPath('b')">My day went differently</button>
+        </div>
+
+        <!-- PATH A: tick-box list -->
+        <div id="night-path-a">
+          <p class="path-hint">Tick each meal you ate as planned. Submit to deal with anything you missed.</p>
+          <div id="night-tick-list"></div>
+          <button class="btn-primary" id="night-submit-a" onclick="submitPathA()" disabled>Show me what I missed</button>
+          <button class="btn-primary hidden" id="night-see-results" onclick="submitNight('a')">See my results</button>
+          <div id="night-loading-a" class="loading-state hidden">Analyzing your day…</div>
+        </div>
+
+        <!-- PATH B: free-form re-entry -->
+        <div id="night-path-b" class="hidden">
+          <p class="path-hint">Just enter what you actually ate today.</p>
+          <div class="meal-input-group">
+            <div class="meal-label-row">
+              <label class="form-label">Breakfast</label>
+              <button class="mic-btn" id="night-b-mic-b" onclick="startVoice('night-b-breakfast','night-b-mic-b','night-voice-indicator')">🎤</button>
+            </div>
+            <textarea id="night-b-breakfast" class="meal-textarea" placeholder="e.g. 2 eggs, oats…" rows="2"></textarea>
+          </div>
+          <div class="meal-input-group">
+            <div class="meal-label-row">
+              <label class="form-label">Lunch</label>
+              <button class="mic-btn" id="night-b-mic-l" onclick="startVoice('night-b-lunch','night-b-mic-l','night-voice-indicator')">🎤</button>
+            </div>
+            <textarea id="night-b-lunch" class="meal-textarea" placeholder="e.g. chicken, rice…" rows="2"></textarea>
+          </div>
+          <div class="meal-input-group">
+            <div class="meal-label-row">
+              <label class="form-label">Dinner</label>
+              <button class="mic-btn" id="night-b-mic-d" onclick="startVoice('night-b-dinner','night-b-mic-d','night-voice-indicator')">🎤</button>
+            </div>
+            <textarea id="night-b-dinner" class="meal-textarea" placeholder="e.g. salmon, sweet potato…" rows="2"></textarea>
+          </div>
+          <button class="btn-primary" id="night-b-submit" onclick="submitNight('b')">See my results</button>
+          <div id="night-loading-b" class="loading-state hidden">Analyzing your day…</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
   <section id="screen-summary"><div class="screen-content"><h2>End-of-Day Summary</h2></div></section>
   <section id="screen-sleep"><div class="screen-content"><h2>Sleep</h2></div></section>
 
