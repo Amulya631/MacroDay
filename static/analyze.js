@@ -40,6 +40,84 @@ function renderMascotCard(affirmation, mascot) {
   if (msg) msg.textContent = affirmation;
 }
 
+/* ─── Snack suggestions ────────────────────────────────────────────────────── */
+
+function renderSnackSuggestions(suggestions) {
+  const section = document.getElementById('snack-section');
+  const cards = document.getElementById('snack-cards');
+  if (!section || !cards) return;
+
+  if (!suggestions || suggestions.length === 0) {
+    section.classList.add('hidden');
+    return;
+  }
+
+  cards.innerHTML = suggestions.map((s, i) => {
+    const macroStr = Object.entries(s.macros || {})
+      .map(([k, v]) => `${v}${MACRO_UNITS[k] || ''} ${k}`)
+      .join(' · ');
+    return `<div class="snack-card">
+        <div class="snack-info">
+          <span class="snack-name">${s.name}</span>
+          <span class="snack-macros">${macroStr}</span>
+        </div>
+        <button class="btn-add-snack" onclick="addSnack(${i})">Add</button>
+      </div>`;
+  }).join('');
+
+  window._currentSnacks = suggestions;
+  section.classList.remove('hidden');
+}
+
+async function addSnack(index) {
+  const snack = window._currentSnacks && window._currentSnacks[index];
+  if (!snack) return;
+
+  const profile = getProfile();
+  if (!profile) return;
+
+  const todayData = JSON.parse(localStorage.getItem('macroday_today') || '{}');
+  const meals = todayData.meals || {};
+  if (!Array.isArray(meals.snacks)) meals.snacks = [];
+  meals.snacks.push(snack.name);
+  todayData.meals = meals;
+  localStorage.setItem('macroday_today', JSON.stringify(todayData));
+
+  const snackLoading = document.getElementById('snack-loading');
+  const snackCards = document.getElementById('snack-cards');
+  if (snackLoading) snackLoading.classList.remove('hidden');
+  if (snackCards) snackCards.classList.add('hidden');
+
+  try {
+    const result = await callAnalyze({
+      meals,
+      targets: profile.targets,
+      mode: 'morning',
+      mascot: profile.mascot
+    });
+
+    if (!result.needs_clarification) {
+      todayData.morning_analysis = result;
+      localStorage.setItem('macroday_today', JSON.stringify(todayData));
+      renderRings(result.macros, profile.targets);
+      const feedbackEl = document.getElementById('morning-feedback');
+      if (feedbackEl) feedbackEl.textContent = result.feedback;
+      renderMascotCard(result.affirmation, profile.mascot);
+      renderSnackSuggestions(result.snack_suggestions);
+    }
+  } catch (err) {
+    console.error('Snack recalculation failed:', err);
+  } finally {
+    if (snackLoading) snackLoading.classList.add('hidden');
+    if (snackCards) snackCards.classList.remove('hidden');
+  }
+}
+
+function doneSnacks() {
+  const section = document.getElementById('snack-section');
+  if (section) section.classList.add('hidden');
+}
+
 /* ─── Morning results ──────────────────────────────────────────────────────── */
 
 function renderMorningResults(result, meals, profile) {
@@ -59,4 +137,5 @@ function renderMorningResults(result, meals, profile) {
   if (feedbackEl) feedbackEl.textContent = result.feedback;
 
   renderMascotCard(result.affirmation, profile.mascot);
+  renderSnackSuggestions(result.snack_suggestions);
 }
