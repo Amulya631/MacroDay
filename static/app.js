@@ -48,7 +48,7 @@ function routeOnLoad() {
 
   handleDayRollover();
 
-  const hour = new Date().getHours();
+  const hour = 20;
   const today = JSON.parse(localStorage.getItem('macroday_today') || '{}');
   const isToday = today.date === new Date().toDateString();
 
@@ -325,7 +325,7 @@ function renderNightTickList() {
         </div>
         <button class="btn-skip-meal" id="expansion-skip-${m.key}" onclick="resolveItemSkipped('${m.key}')">I skipped this meal</button>
         <div class="skip-mascot-card hidden" id="skip-card-${m.key}">
-          <img class="mascot-card-img" id="skip-mascot-img-${m.key}" src="" alt="mascot">
+          <img class="mascot-card-img" id="skip-mascot-img-${m.key}" alt="mascot" style="min-width:52px">
           <div class="skip-mascot-body">
             <p class="mascot-card-msg" id="skip-mascot-msg-${m.key}"></p>
             <button class="btn-secondary" onclick="dismissSkipCard('${m.key}')">Got it</button>
