@@ -168,3 +168,9 @@ MacroDay/
 ---
 
 Built with [Claude Code](https://claude.ai/code) · Powered by [Anthropic](https://anthropic.com)
+
+---
+
+## License
+
+MIT © 2025 Batila Amulya
