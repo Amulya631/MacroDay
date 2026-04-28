@@ -72,7 +72,7 @@
   Acceptance: Mid-day screen shows the morning plan and rings in read-only mode. "Update meals" re-opens the form. Afternoon screen shows both buttons and routes correctly. Sleep screen shows the mascot image and punchline. Overall app looks polished — bold numbers, colored rings, clean mascot cards, health/wellness feel.
   Verify: Force each time window in `app.js` and confirm the correct screen renders with complete content. Do a full visual review of every screen — rings are colored and bold, mascot cards look clean, typography is readable, spacing feels intentional. Open on a phone screen size (DevTools device emulation) and confirm nothing is broken or overflowing.
 
-- [ ] **11. Railway deployment — live URL**
+- [x] **11. Railway deployment — live URL**
   Spec ref: `spec.md > Runtime & Deployment` and `spec.md > Dependencies & External Services`
   What to build: Push the complete project to the MacroDay GitHub repo. In Railway dashboard: create a new project → "Deploy from GitHub repo" → select MacroDay → Railway auto-detects Python. Set the environment variable: `ANTHROPIC_API_KEY` = your actual Anthropic API key (from console.anthropic.com). Confirm `Procfile` exists with: `web: uvicorn main:app --host 0.0.0.0 --port $PORT`. Confirm `requirements.txt` has all dependencies. Trigger deploy. Wait for build to complete. Test the live URL.
   Acceptance: Railway build succeeds (green checkmark). The live URL loads MacroDay in Chrome. The profile screen appears on first visit. The full morning check-in flow works end-to-end on the live URL (form → API → rings → mascot card). Voice input works (HTTPS is active). The live URL can be shared and accessed by someone else.

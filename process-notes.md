@@ -102,6 +102,13 @@ Learner was highly generative throughout. Key moments where they drove requireme
 
 ## /build
 
+### Step 11: Railway deployment — live URL
+
+- What was built: Fixed UTF-16 encoded `.gitignore` (was silently failing — git ignores non-UTF-8 gitignore files). Untracked `.env` from git history (step 1 commit only had placeholder key, real key was never pushed). Added `__pycache__/` and `.claude/` to `.gitignore`. Added all `docs/` files to the repo. Pushed 15 local commits to GitHub (`Amulya631/MacroDay`). Guided Railway Variables setup — key was initially added to shared project variables (wrong), moved to service-level Variables tab (correct). App deployed at https://web-production-5c594.up.railway.app/
+- Verification: Full demo flow confirmed on live URL in incognito Chrome — profile setup, morning check-in, analyze, macro rings, snack add with live ring update, voice input all working. Network tab showed 200 on `/api/analyze`.
+- Comprehension check: "Why did ANTHROPIC_API_KEY need to go in Railway's Variables tab rather than hardcoded in main.py?" — answered "Variables tab encrypts the key" (close; corrected to: secrets in code end up in the GitHub repo where anyone can read them).
+- Issues: Initial 500 errors because API key was added to Railway shared/project variables instead of the service-level Variables tab. Fixed by adding key directly to the service Variables tab — redeployed and worked immediately.
+
 ### Step 10: Remaining screens + full CSS polish
 
 - What was built: Full `#screen-midday` — 5 SVG macro rings with `midday-` prefix, read-only meal list (`mealRow` helper), "Update meals" button calls `updateMorningPlan()` which pre-fills the morning form fields from localStorage and navigates back. `initMiddayScreen()` reads `macroday_today.morning_analysis` and calls `renderRings` with `'midday-'` prefix. Full `#screen-afternoon` — mascot image (switched by `initAfternoonScreen()`), two-button layout ("Yes, log my meals" / "No thanks"), idle confirmation message on skip, `afternoonLogMeals()` routes to morning screen, `afternoonSkip()` shows idle message and hides buttons. Full `#screen-sleep` — centered mascot image, dynamic punchline from `initSleepScreen()` based on mascot preference (Vilo gets roast, Milo gets encouragement). `routeOnLoad()` updated to call `initMiddayScreen()`, `initAfternoonScreen()`, and `initSleepScreen()` when routing to those screens. CSS polish pass: mobile breakpoint (`@media max-width: 480px`) with smaller rings and stacked buttons, midday meal list styles, afternoon mascot/button/idle styles, sleep screen centered layout with large mascot image and drop-shadow.
