@@ -14,16 +14,16 @@ async function callAnalyze(payload) {
 
 const MACRO_UNITS = { calories: 'kcal', protein: 'g', fiber: 'g', carbs: 'g', fats: 'g' };
 
-function renderRings(macros, targets) {
+function renderRings(macros, targets, prefix = '') {
   ['calories', 'protein', 'fiber', 'carbs', 'fats'].forEach(key => {
     const pct = Math.min((macros[key] / targets[key]) * 100, 100);
-    const fillEl = document.querySelector(`#ring-${key} .ring-fill`);
+    const fillEl = document.querySelector(`#ring-${prefix}${key} .ring-fill`);
     if (fillEl) fillEl.setAttribute('stroke-dasharray', `${pct.toFixed(1)} ${(100 - pct).toFixed(1)}`);
 
-    const pctEl = document.getElementById(`ring-${key}-pct`);
+    const pctEl = document.getElementById(`ring-${prefix}${key}-pct`);
     if (pctEl) pctEl.textContent = `${Math.round(pct)}%`;
 
-    const remEl = document.getElementById(`ring-${key}-rem`);
+    const remEl = document.getElementById(`ring-${prefix}${key}-rem`);
     if (remEl) {
       const remaining = Math.max(targets[key] - macros[key], 0);
       remEl.textContent = remaining <= 0 ? 'Goal hit!' : `${Math.round(remaining)}${MACRO_UNITS[key]} left`;
@@ -116,6 +116,64 @@ async function addSnack(index) {
 function doneSnacks() {
   const section = document.getElementById('snack-section');
   if (section) section.classList.add('hidden');
+}
+
+/* ─── End-of-day summary ───────────────────────────────────────────────────── */
+
+function renderSummary(result, profile) {
+  renderRings(result.macros, profile.targets, 'summary-');
+
+  const feedbackEl = document.getElementById('summary-feedback');
+  if (feedbackEl) feedbackEl.textContent = result.feedback;
+
+  const mascotImg = document.getElementById('summary-mascot-img');
+  const mascotMsg = document.getElementById('summary-mascot-message');
+  const src = profile.mascot === 'vilo' ? '/assets/Vilo_Evil.png' : '/assets/Milo_Good.png';
+  if (mascotImg) mascotImg.src = src;
+  if (mascotMsg) mascotMsg.textContent = result.affirmation;
+
+  const avg = averageMacroPercent(result.macros, profile.targets);
+  const subtitleEl = document.getElementById('summary-subtitle');
+  if (subtitleEl) {
+    subtitleEl.textContent = avg >= 90
+      ? 'Goals hit. Here\'s your final breakdown.'
+      : 'Here\'s how your day actually went.';
+  }
+
+  const snackSection = document.getElementById('summary-snack-section');
+  if (snackSection) {
+    if (avg < 90 && result.snack_suggestions && result.snack_suggestions.length > 0) {
+      window._summarySuggestions = result.snack_suggestions;
+      snackSection.classList.remove('hidden');
+    } else {
+      snackSection.classList.add('hidden');
+    }
+  }
+}
+
+function toggleSummarySnacks() {
+  const cards = document.getElementById('summary-snack-cards');
+  const btn   = document.getElementById('summary-snack-btn');
+  if (!cards) return;
+
+  if (cards.classList.contains('hidden') && window._summarySuggestions) {
+    cards.innerHTML = window._summarySuggestions.map(s => {
+      const macroStr = Object.entries(s.macros || {})
+        .map(([k, v]) => `${v}${MACRO_UNITS[k] || ''} ${k}`)
+        .join(' · ');
+      return `<div class="snack-card">
+        <div class="snack-info">
+          <span class="snack-name">${s.name}</span>
+          <span class="snack-macros">${macroStr}</span>
+        </div>
+      </div>`;
+    }).join('');
+    cards.classList.remove('hidden');
+    if (btn) btn.textContent = 'Maybe next time';
+  } else {
+    cards.classList.add('hidden');
+    if (btn) btn.textContent = 'Want a suggestion to close the gap tonight?';
+  }
 }
 
 /* ─── Morning results ──────────────────────────────────────────────────────── */

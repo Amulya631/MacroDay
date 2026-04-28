@@ -506,6 +506,31 @@ function saveNightResult(meals, result) {
   localStorage.setItem('macroday_today', JSON.stringify(todayData));
 }
 
+/* ─── Day rollover (called from summary screen) ─────────────────────────── */
+
+function rolloverDay() {
+  const todayData = JSON.parse(localStorage.getItem('macroday_today') || '{}');
+  const profile   = getProfile();
+
+  if (todayData.final_analysis && profile) {
+    const history = JSON.parse(localStorage.getItem('macroday_history') || '{}');
+    const dateKey = todayData.date || new Date().toDateString();
+    history[dateKey] = {
+      goals_hit: averageMacroPercent(todayData.final_analysis.macros, profile.targets) >= 90,
+      macros:    todayData.final_analysis.macros,
+      targets:   profile.targets
+    };
+    localStorage.setItem('macroday_history', JSON.stringify(history));
+  }
+
+  localStorage.setItem('macroday_today', JSON.stringify({
+    date:           new Date().toDateString(),
+    morning_logged: false
+  }));
+
+  showScreen('screen-sleep');
+}
+
 /* ─── Init ───────────────────────────────────────────────────────────────── */
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -301,7 +301,97 @@
       </div>
     </div>
   </section>
-  <section id="screen-summary"><div class="screen-content"><h2>End-of-Day Summary</h2></div></section>
+  <!-- SCREEN: End-of-Day Summary -->
+  <section id="screen-summary">
+    <div class="screen-content">
+      <h2>How You Did</h2>
+      <p class="subtitle" id="summary-subtitle">Here's your end-of-day breakdown.</p>
+
+      <!-- Macro rings (actual intake vs targets) -->
+      <div class="rings-grid">
+
+        <div class="ring-item" id="ring-summary-calories">
+          <svg viewBox="0 0 36 36" class="macro-ring">
+            <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
+            <circle class="ring-fill ring-fill-calories" cx="18" cy="18" r="15.9"
+                    stroke-dasharray="0 100" stroke-dashoffset="25"/>
+          </svg>
+          <div class="ring-name">Calories</div>
+          <div class="ring-pct" id="ring-summary-calories-pct">0%</div>
+          <div class="ring-rem" id="ring-summary-calories-rem">—</div>
+        </div>
+
+        <div class="ring-item" id="ring-summary-protein">
+          <svg viewBox="0 0 36 36" class="macro-ring">
+            <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
+            <circle class="ring-fill ring-fill-protein" cx="18" cy="18" r="15.9"
+                    stroke-dasharray="0 100" stroke-dashoffset="25"/>
+          </svg>
+          <div class="ring-name">Protein</div>
+          <div class="ring-pct" id="ring-summary-protein-pct">0%</div>
+          <div class="ring-rem" id="ring-summary-protein-rem">—</div>
+        </div>
+
+        <div class="ring-item" id="ring-summary-fiber">
+          <svg viewBox="0 0 36 36" class="macro-ring">
+            <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
+            <circle class="ring-fill ring-fill-fiber" cx="18" cy="18" r="15.9"
+                    stroke-dasharray="0 100" stroke-dashoffset="25"/>
+          </svg>
+          <div class="ring-name">Fiber</div>
+          <div class="ring-pct" id="ring-summary-fiber-pct">0%</div>
+          <div class="ring-rem" id="ring-summary-fiber-rem">—</div>
+        </div>
+
+        <div class="ring-item" id="ring-summary-carbs">
+          <svg viewBox="0 0 36 36" class="macro-ring">
+            <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
+            <circle class="ring-fill ring-fill-carbs" cx="18" cy="18" r="15.9"
+                    stroke-dasharray="0 100" stroke-dashoffset="25"/>
+          </svg>
+          <div class="ring-name">Carbs</div>
+          <div class="ring-pct" id="ring-summary-carbs-pct">0%</div>
+          <div class="ring-rem" id="ring-summary-carbs-rem">—</div>
+        </div>
+
+        <div class="ring-item" id="ring-summary-fats">
+          <svg viewBox="0 0 36 36" class="macro-ring">
+            <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
+            <circle class="ring-fill ring-fill-fats" cx="18" cy="18" r="15.9"
+                    stroke-dasharray="0 100" stroke-dashoffset="25"/>
+          </svg>
+          <div class="ring-name">Fats</div>
+          <div class="ring-pct" id="ring-summary-fats-pct">0%</div>
+          <div class="ring-rem" id="ring-summary-fats-rem">—</div>
+        </div>
+
+      </div>
+
+      <!-- AI feedback -->
+      <div class="feedback-section">
+        <p class="feedback-text" id="summary-feedback"></p>
+      </div>
+
+      <!-- Mascot affirmation card -->
+      <div class="mascot-card">
+        <img id="summary-mascot-img" src="" alt="mascot" class="mascot-card-img"/>
+        <p id="summary-mascot-message" class="mascot-card-msg"></p>
+      </div>
+
+      <!-- Late-night snack suggestion (only if still short on macros) -->
+      <div id="summary-snack-section" class="snack-section hidden" style="margin-top:1.25rem">
+        <button class="btn-secondary" id="summary-snack-btn" onclick="toggleSummarySnacks()">
+          Want a suggestion to close the gap tonight?
+        </button>
+        <div id="summary-snack-cards" class="snack-cards hidden" style="margin-top:0.75rem"></div>
+      </div>
+
+      <button class="btn-primary" onclick="rolloverDay()" style="margin-top:1.75rem;width:100%">
+        See you tomorrow
+      </button>
+
+    </div>
+  </section>
   <section id="screen-sleep"><div class="screen-content"><h2>Sleep</h2></div></section>
 
   <script src="/static/app.js"></script>
