@@ -144,6 +144,20 @@ MacroDay/
 
 ---
 
+## Architecture Decisions
+
+**Single service, no CORS.** FastAPI serves both the static frontend and the `/api/analyze` endpoint from the same origin. The alternative — a separate frontend deployment — introduces CORS headers, two Railway services, and two deploy pipelines for a demo app. Not worth it. One `Procfile`, one environment variable, one URL.
+
+**One endpoint, three modes.** Rather than separate routes for morning analysis, night analysis, and snack recalculation, everything goes through `POST /api/analyze` with a `mode` field. This keeps the frontend simple (one fetch wrapper) and means the prompt logic lives in one place — easier to tune Vilo's tone without hunting across multiple handlers.
+
+**Vague input detection at the prompt level, not the application level.** When a user types "some chicken," the app doesn't try to parse or validate the input before sending it. Instead, the Claude prompt instructs the model to return `needs_clarification: true` with a specific message if it can't calculate macros with reasonable confidence. This is more robust than regex or keyword matching — Claude can catch edge cases that a rule-based validator would miss ("food from the gym" is vague; "leftover pasta" is ambiguous but probably workable).
+
+**localStorage over a backend database.** For a personal-use demo with no auth requirement, localStorage is the right call. Zero infrastructure, zero latency, works offline, resets cleanly. The tradeoff — data doesn't follow you across devices — is acceptable for a hackathon. The data model is designed so that migrating to a real database later is straightforward: each key (`macroday_profile`, `macroday_today`, `macroday_history`) maps directly to what would be a user-scoped database record.
+
+**SVG rings over CSS conic-gradient.** `stroke-dasharray` / `stroke-dashoffset` on SVG circles gives precise control over fill percentage and animates cleanly with CSS transitions. Conic-gradient is simpler to write but harder to animate and has inconsistent cross-browser rendering for partial fills. The SVG approach adds ~10 lines per ring but is rock-solid on every browser.
+
+---
+
 ## What's Next (v2 Ideas)
 
 - **Photo macro analysis** — photograph a meal, AI estimates macros from the image
