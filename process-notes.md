@@ -102,6 +102,11 @@ Learner was highly generative throughout. Key moments where they drove requireme
 
 ## /build
 
+### Step 10: Remaining screens + full CSS polish
+
+- What was built: Full `#screen-midday` — 5 SVG macro rings with `midday-` prefix, read-only meal list (`mealRow` helper), "Update meals" button calls `updateMorningPlan()` which pre-fills the morning form fields from localStorage and navigates back. `initMiddayScreen()` reads `macroday_today.morning_analysis` and calls `renderRings` with `'midday-'` prefix. Full `#screen-afternoon` — mascot image (switched by `initAfternoonScreen()`), two-button layout ("Yes, log my meals" / "No thanks"), idle confirmation message on skip, `afternoonLogMeals()` routes to morning screen, `afternoonSkip()` shows idle message and hides buttons. Full `#screen-sleep` — centered mascot image, dynamic punchline from `initSleepScreen()` based on mascot preference (Vilo gets roast, Milo gets encouragement). `routeOnLoad()` updated to call `initMiddayScreen()`, `initAfternoonScreen()`, and `initSleepScreen()` when routing to those screens. CSS polish pass: mobile breakpoint (`@media max-width: 480px`) with smaller rings and stacked buttons, midday meal list styles, afternoon mascot/button/idle styles, sleep screen centered layout with large mascot image and drop-shadow.
+- Issues: None. `escapeHtml` was already defined in the night check-in section — `mealRow` reuses it cleanly.
+
 ### Step 9: End-of-day summary + day rollover
 
 - What was built: Full `#screen-summary` with 5 SVG macro rings (IDs prefixed `ring-summary-` to avoid ID conflicts with morning result rings). `renderRings` updated to accept an optional `prefix` parameter (default `''` — backward compatible). `renderSummary(result, profile)` in `analyze.js`: renders rings with `'summary-'` prefix, sets feedback and mascot card, updates subtitle based on ≥90% average, shows/hides snack suggestion section based on performance. `toggleSummarySnacks()` toggles a collapsible snack list from the night API response. `rolloverDay()` in `app.js`: pushes `final_analysis` to `macroday_history` keyed by date, resets `macroday_today` to `{ date: today, morning_logged: false }`, routes to `#screen-sleep`.
