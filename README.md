@@ -173,4 +173,4 @@ Built with [Claude Code](https://claude.ai/code) · Powered by [Anthropic](https
 
 ## License
 
-MIT © 2025 Batila Amulya
+MIT © 2026 Batila Amulya
