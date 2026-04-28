@@ -48,7 +48,7 @@ function routeOnLoad() {
 
   handleDayRollover();
 
-  const hour = 20;
+  const hour = new Date().getHours();
   const today = JSON.parse(localStorage.getItem('macroday_today') || '{}');
   const isToday = today.date === new Date().toDateString();
 
@@ -388,14 +388,15 @@ function resolveItemSkipped(key) {
     ? "Skipped. Bold strategy. Painfully wrong, but bold."
     : "Sounds like a busy day! Have a glass of water or a refreshing juice.";
 
-  document.getElementById(`skip-mascot-img-${key}`).src = mascotSrc;
-  document.getElementById(`skip-mascot-msg-${key}`).textContent = msg;
-
   const field   = document.getElementById(`expansion-field-${key}`);
   const skipBtn = document.getElementById(`expansion-skip-${key}`);
   if (field)   field.style.display   = 'none';
   if (skipBtn) skipBtn.style.display = 'none';
+
+  // Show card before setting src — Chrome won't load images set on hidden elements
   document.getElementById(`skip-card-${key}`).classList.remove('hidden');
+  document.getElementById(`skip-mascot-img-${key}`).src = mascotSrc;
+  document.getElementById(`skip-mascot-msg-${key}`).textContent = msg;
 }
 
 function dismissSkipCard(key) {
