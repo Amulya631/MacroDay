@@ -249,7 +249,7 @@ h2 {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 /* ─── Morning check-in ───────────────────────────────────────────────────── */
