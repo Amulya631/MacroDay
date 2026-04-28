@@ -102,6 +102,35 @@ Learner was highly generative throughout. Key moments where they drove requireme
 
 ## /build
 
+### Step 9: End-of-day summary + day rollover
+
+- What was built: Full `#screen-summary` with 5 SVG macro rings (IDs prefixed `ring-summary-` to avoid ID conflicts with morning result rings). `renderRings` updated to accept an optional `prefix` parameter (default `''` — backward compatible). `renderSummary(result, profile)` in `analyze.js`: renders rings with `'summary-'` prefix, sets feedback and mascot card, updates subtitle based on ≥90% average, shows/hides snack suggestion section based on performance. `toggleSummarySnacks()` toggles a collapsible snack list from the night API response. `rolloverDay()` in `app.js`: pushes `final_analysis` to `macroday_history` keyed by date, resets `macroday_today` to `{ date: today, morning_logged: false }`, routes to `#screen-sleep`.
+- Verification: Summary screen showed 5 rings with fill amounts. Snack suggestions appeared when "Want a suggestion" was clicked. "See you tomorrow" routed to sleep screen. localStorage confirmed `macroday_history` entry and `morning_logged: false` reset.
+- Comprehension check: skipped — user moved straight to a follow-up fix.
+- Issues: Claude was returning long feedback and affirmation text. Fixed by adding explicit length cap to the system prompt: "feedback" ≤ 2 sentences, "affirmation" ≤ 1 sentence. Also noted: summary snack suggestions are display-only by design (no Add button — end-of-day, no re-analysis needed).
+
+### Step 8: Night check-in — Path A, Path B, and no-morning-log edge case
+
+- What was built: Full `#screen-night` with two paths and no-morning-log edge case. Path A: tick-box list renders from `macroday_today.meals`; "Show me what I missed" enables after first checkbox interaction; inline expansions appear for unticked items; Branch A1 (re-entry) and Branch A2 (skip with inline mascot affirmation card) both resolve items; `checkAllNightResolved()` enables "See my results" when all items resolved. Path B: three text areas + mic buttons. No-morning-log: mascot "it's okay" card + three text areas. All paths call `POST /api/analyze` with `mode: "night"` and route to `#screen-summary`. `saveNightResult()` writes `night_logged`, `actual_meals`, and `final_analysis` to `macroday_today`. `startVoice` generalized with optional `listeningElId` parameter and now dispatches `input` event on the textarea (works for both morning and night fields).
+- Verification: Path A tick-boxes rendered from morning meals. "Show me what I missed" enabled after checkbox interaction. Unticked items showed expansion areas. Skip branch showed inline mascot card (Got it dismiss resolved item). Re-entry branch confirmed what-I-ate. Path B three text areas worked and routed to summary. No-morning-log edge case showed correct mascot message and inputs.
+- Issues (resolved in follow-up session): Two bugs found during re-verification. (1) CSS specificity bug: `.hidden { display: none }` was overridden by `.tick-expansion { display: flex }` and `.skip-mascot-card { display: flex }` which appear later in style.css — fixed by adding `!important` to `.hidden`. This was causing all expansion areas and skip cards to be visible immediately on load. (2) Skip card image load order: `resolveItemSkipped` was setting `img.src` while the card was still `display: none` — Chrome won't load images on hidden elements, resulting in a broken image icon. Fixed by showing the card first, then setting src. Comprehension check: "What does `nightState.resolved` contain when the user clicks See my results?" — answered correctly: the final state of every meal (each key maps to typed text or the string 'skipped').
+- Learner concerned about hitting context limit — noted that `/clear` between steps handles this; no tokens wasted.
+
+### Step 7: Snack suggestions + live ring updates
+
+- What was built: `renderSnackSuggestions(suggestions)` in `analyze.js` renders 2–3 snack cards below the mascot affirmation card. Each card shows snack name + macro contribution string + green "Add" button. `addSnack(index)` appends the snack name to `macroday_today.meals.snacks[]` in localStorage, re-calls `/api/analyze` with the full updated meal list, then re-renders rings, feedback, mascot card, and fresh snack suggestions. `doneSnacks()` hides the section. `renderMorningResults` updated to call `renderSnackSuggestions` on initial load. Loading state ("Recalculating…") shown during re-call.
+- Verification: Snack section appeared after morning analysis. Clicking "Add" triggered recalculation and ring update. Console confirmed: `JSON.parse(localStorage.getItem('macroday_today')).meals.snacks` returned `['Greek yogurt (200g) with berries (80g)']` — correct.
+- Comprehension check: pending (see below)
+- Issues: DevTools localStorage panel showed stale view — user thought snacks weren't saved. Confirmed working via console. No code issue.
+
+### Step 6: Morning results — SVG macro rings + AI feedback + mascot affirmation card
+
+- What was built: `#screen-morning-result` expanded with full layout — 5 SVG macro rings (calories/protein/fiber/carbs/fats) using `stroke-dasharray` pattern, AI feedback block with green left-border styling, mascot affirmation card (image + message). `analyze.js` extended with `renderRings(macros, targets)`, `renderMascotCard(affirmation, mascot)`, and `renderMorningResults(result, meals, profile)`. `submitMorning()` updated to handle `needs_clarification: true` (shows yellow inline message, keeps form open) and calls `renderMorningResults` on success. `style.css` extended with ring colors, flex grid layout, feedback section, and mascot card styling.
+- Verification: Learner confirmed 5 rings visible with fill amounts. Vilo feedback and affirmation card visible. localStorage confirmed: `macroday_today.morning_logged: true`, full `morning_analysis` with macros, gaps, feedback, snack_suggestions, affirmation — all correct structure.
+- Comprehension check: pending (see below)
+- Issues: First submit attempt triggered clarification path — learner's meal descriptions were too vague for Vilo's standard. Re-submitted with specific quantities and got past the gate.
+- Note: Learner's reaction to seeing Vilo in action: "I love the response." Good sign for the hero screenshot in the Devpost submission.
+
 ### Step 5: Morning check-in form — meal input + voice
 
 - What was built: Full `#screen-morning` with three meal text areas (Breakfast, Lunch, Dinner), mic buttons per field, `updateAnalyzeBtn()` using `.some()` to enable the submit button when any field has content, `startVoice()` using `webkitSpeechRecognition` with listening indicator and pulse animation, `submitMorning()` async function that POSTs to `/api/analyze` with loading state, stores result in `window._morningResult`, and navigates to `screen-morning-result`. `callAnalyze(payload)` added to `analyze.js` as the bare fetch wrapper.

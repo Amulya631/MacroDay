@@ -97,6 +97,7 @@ Rules:
 - Return ONLY valid JSON. No prose outside the JSON object.
 - Snack suggestions should target the biggest macro gap.
 - Be accurate with macro estimates — use standard nutrition data.
+- Keep "feedback" to 2 sentences maximum. Keep "affirmation" to 1 sentence maximum. Be punchy, not wordy.
 
 Return this exact JSON structure:
 {{
