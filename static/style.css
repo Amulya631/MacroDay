@@ -8,9 +8,34 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: #f5f7fa;
+  background: #f4f6f9;
   color: #1a1a2e;
   min-height: 100vh;
+}
+
+/* ─── Mobile-first layout ───────────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+  .screen-content {
+    padding: 1.5rem 1rem 2.5rem !important;
+  }
+  h2 {
+    font-size: 1.45rem !important;
+  }
+  .macro-ring {
+    width: 68px !important;
+    height: 68px !important;
+  }
+  .ring-pct {
+    font-size: 1rem !important;
+  }
+  .afternoon-btns {
+    flex-direction: column;
+  }
+  .afternoon-btns .btn-primary,
+  .afternoon-btns .btn-secondary {
+    width: 100%;
+  }
 }
 
 /* ─── Nav ────────────────────────────────────────────────────────────────── */
@@ -545,6 +570,104 @@ h2 {
 .btn-secondary:hover {
   border-color: #1a1a2e;
   color: #1a1a2e;
+}
+
+/* ─── Mid-day screen ─────────────────────────────────────────────────────── */
+
+.midday-meals {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.midday-meal-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 0.75rem 1rem;
+  background: #fff;
+  border: 1.5px solid #e8ecf0;
+  border-radius: 12px;
+}
+
+.midday-meal-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #888;
+  min-width: 68px;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.midday-meal-value {
+  font-size: 0.9rem;
+  color: #333;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+/* ─── Afternoon screen ───────────────────────────────────────────────────── */
+
+.afternoon-mascot-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.afternoon-mascot-img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  border-radius: 14px;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1));
+}
+
+.afternoon-btns {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
+.afternoon-idle {
+  margin-top: 1.5rem;
+  padding: 1rem 1.25rem;
+  background: #f0faf4;
+  border: 1.5px solid #7ed6a3;
+  border-radius: 12px;
+  color: #1a6b45;
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* ─── Sleep screen ───────────────────────────────────────────────────────── */
+
+.sleep-screen-content {
+  text-align: center;
+  padding-top: 3.5rem !important;
+}
+
+.sleep-mascot-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.75rem;
+}
+
+.sleep-mascot-img {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 18px rgba(0,0,0,0.12));
+  opacity: 0.92;
+}
+
+#screen-sleep h2 {
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
 }
 
 /* ─── Night check-in ─────────────────────────────────────────────────────── */

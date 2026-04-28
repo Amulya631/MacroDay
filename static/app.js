@@ -53,14 +53,26 @@ function routeOnLoad() {
   const isToday = today.date === new Date().toDateString();
 
   if (hour >= 5 && hour < 12) {
-    showScreen(isToday && today.morning_logged ? 'screen-midday' : 'screen-morning');
+    if (isToday && today.morning_logged) {
+      showScreen('screen-midday');
+      initMiddayScreen();
+    } else {
+      showScreen('screen-morning');
+    }
   } else if (hour >= 12 && hour < 18) {
-    showScreen(isToday && today.morning_logged ? 'screen-midday' : 'screen-afternoon');
+    if (isToday && today.morning_logged) {
+      showScreen('screen-midday');
+      initMiddayScreen();
+    } else {
+      showScreen('screen-afternoon');
+      initAfternoonScreen();
+    }
   } else if (hour >= 18 && hour < 24) {
     showScreen('screen-night');
     initNightScreen();
   } else {
     showScreen('screen-sleep');
+    initSleepScreen();
   }
 }
 
@@ -219,6 +231,90 @@ async function submitMorning() {
     loadingEl.classList.add('hidden');
     analyzeBtn.disabled = false;
     alert('Analysis failed — check your connection and try again.');
+  }
+}
+
+/* ─── Mid-day screen ─────────────────────────────────────────────────────── */
+
+function initMiddayScreen() {
+  const today   = JSON.parse(localStorage.getItem('macroday_today') || '{}');
+  const profile = getProfile();
+
+  if (today.morning_analysis && profile) {
+    if (typeof renderRings === 'function') {
+      renderRings(today.morning_analysis.macros, profile.targets, 'midday-');
+    }
+  }
+
+  const mealsEl = document.getElementById('midday-meals');
+  if (mealsEl && today.meals) {
+    const meals = today.meals;
+    let html = '';
+    if (meals.breakfast) html += mealRow('Breakfast', meals.breakfast);
+    if (meals.lunch)     html += mealRow('Lunch',     meals.lunch);
+    if (meals.dinner)    html += mealRow('Dinner',    meals.dinner);
+    if (Array.isArray(meals.snacks)) {
+      meals.snacks.forEach(s => { html += mealRow('Snack', s); });
+    }
+    mealsEl.innerHTML = html || '<p class="path-hint">No meals found — try re-analyzing.</p>';
+  }
+}
+
+function mealRow(label, value) {
+  return `<div class="midday-meal-item">
+    <span class="midday-meal-label">${label}</span>
+    <span class="midday-meal-value">${escapeHtml(String(value))}</span>
+  </div>`;
+}
+
+function updateMorningPlan() {
+  const today = JSON.parse(localStorage.getItem('macroday_today') || '{}');
+  const meals = today.meals || {};
+  const breakfastEl = document.getElementById('meal-breakfast');
+  const lunchEl     = document.getElementById('meal-lunch');
+  const dinnerEl    = document.getElementById('meal-dinner');
+  if (breakfastEl) breakfastEl.value = meals.breakfast || '';
+  if (lunchEl)     lunchEl.value     = meals.lunch     || '';
+  if (dinnerEl)    dinnerEl.value    = meals.dinner    || '';
+  updateAnalyzeBtn();
+  showScreen('screen-morning');
+}
+
+/* ─── Afternoon screen ───────────────────────────────────────────────────── */
+
+function initAfternoonScreen() {
+  const profile = getProfile();
+  const mascot  = profile ? profile.mascot : 'milo';
+  const img = document.getElementById('afternoon-mascot-img');
+  if (img) img.src = mascot === 'vilo' ? '/assets/Vilo_Evil.png' : '/assets/Milo_Good.png';
+}
+
+function afternoonLogMeals() {
+  showScreen('screen-morning');
+  updateAnalyzeBtn();
+}
+
+function afternoonSkip() {
+  const idleEl = document.getElementById('afternoon-idle');
+  if (idleEl) idleEl.classList.remove('hidden');
+  const btns = document.querySelector('.afternoon-btns');
+  if (btns) btns.style.display = 'none';
+}
+
+/* ─── Sleep screen ───────────────────────────────────────────────────────── */
+
+function initSleepScreen() {
+  const profile = getProfile();
+  const mascot  = profile ? profile.mascot : 'milo';
+
+  const img = document.getElementById('sleep-mascot-img');
+  if (img) img.src = mascot === 'vilo' ? '/assets/Vilo_Evil.png' : '/assets/Milo_Good.png';
+
+  const punchline = document.getElementById('sleep-punchline');
+  if (punchline) {
+    punchline.textContent = mascot === 'vilo'
+      ? "Get some sleep. Tomorrow I'll have more things to critique."
+      : "Great work today. Rest up — tomorrow's plan starts in the morning.";
   }
 }
 

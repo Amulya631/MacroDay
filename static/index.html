@@ -208,8 +208,90 @@
 
     </div>
   </section>
-  <section id="screen-midday"><div class="screen-content"><h2>Mid-Day View</h2></div></section>
-  <section id="screen-afternoon"><div class="screen-content"><h2>Afternoon</h2></div></section>
+  <!-- SCREEN: Mid-Day View -->
+  <section id="screen-midday">
+    <div class="screen-content">
+      <h2>Hey, you're back!</h2>
+      <p class="subtitle" id="midday-subtitle">Here's how your plan looks for today.</p>
+
+      <!-- Read-only macro rings -->
+      <div class="rings-grid">
+        <div class="ring-item" id="ring-midday-calories">
+          <svg viewBox="0 0 36 36" class="macro-ring">
+            <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
+            <circle class="ring-fill ring-fill-calories" cx="18" cy="18" r="15.9"
+                    stroke-dasharray="0 100" stroke-dashoffset="25"/>
+          </svg>
+          <div class="ring-name">Calories</div>
+          <div class="ring-pct" id="ring-midday-calories-pct">0%</div>
+          <div class="ring-rem" id="ring-midday-calories-rem">—</div>
+        </div>
+        <div class="ring-item" id="ring-midday-protein">
+          <svg viewBox="0 0 36 36" class="macro-ring">
+            <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
+            <circle class="ring-fill ring-fill-protein" cx="18" cy="18" r="15.9"
+                    stroke-dasharray="0 100" stroke-dashoffset="25"/>
+          </svg>
+          <div class="ring-name">Protein</div>
+          <div class="ring-pct" id="ring-midday-protein-pct">0%</div>
+          <div class="ring-rem" id="ring-midday-protein-rem">—</div>
+        </div>
+        <div class="ring-item" id="ring-midday-fiber">
+          <svg viewBox="0 0 36 36" class="macro-ring">
+            <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
+            <circle class="ring-fill ring-fill-fiber" cx="18" cy="18" r="15.9"
+                    stroke-dasharray="0 100" stroke-dashoffset="25"/>
+          </svg>
+          <div class="ring-name">Fiber</div>
+          <div class="ring-pct" id="ring-midday-fiber-pct">0%</div>
+          <div class="ring-rem" id="ring-midday-fiber-rem">—</div>
+        </div>
+        <div class="ring-item" id="ring-midday-carbs">
+          <svg viewBox="0 0 36 36" class="macro-ring">
+            <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
+            <circle class="ring-fill ring-fill-carbs" cx="18" cy="18" r="15.9"
+                    stroke-dasharray="0 100" stroke-dashoffset="25"/>
+          </svg>
+          <div class="ring-name">Carbs</div>
+          <div class="ring-pct" id="ring-midday-carbs-pct">0%</div>
+          <div class="ring-rem" id="ring-midday-carbs-rem">—</div>
+        </div>
+        <div class="ring-item" id="ring-midday-fats">
+          <svg viewBox="0 0 36 36" class="macro-ring">
+            <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
+            <circle class="ring-fill ring-fill-fats" cx="18" cy="18" r="15.9"
+                    stroke-dasharray="0 100" stroke-dashoffset="25"/>
+          </svg>
+          <div class="ring-name">Fats</div>
+          <div class="ring-pct" id="ring-midday-fats-pct">0%</div>
+          <div class="ring-rem" id="ring-midday-fats-rem">—</div>
+        </div>
+      </div>
+
+      <!-- Read-only meal list -->
+      <div id="midday-meals" class="midday-meals"></div>
+
+      <button class="btn-primary" onclick="updateMorningPlan()" style="width:100%;margin-top:0.5rem">Update meals</button>
+    </div>
+  </section>
+
+  <!-- SCREEN: Afternoon (missed morning) -->
+  <section id="screen-afternoon">
+    <div class="screen-content">
+      <div class="afternoon-mascot-wrap">
+        <img id="afternoon-mascot-img" src="/assets/Milo_Good.png" alt="mascot" class="afternoon-mascot-img" />
+      </div>
+      <h2>Missed your morning?</h2>
+      <p class="subtitle">You missed your morning check-in — want to log your meals for today anyway?</p>
+      <div class="afternoon-btns">
+        <button class="btn-primary" onclick="afternoonLogMeals()" style="flex:1">Yes, log my meals</button>
+        <button class="btn-secondary" onclick="afternoonSkip()" style="flex:1">No thanks, see you tonight!</button>
+      </div>
+      <div id="afternoon-idle" class="afternoon-idle hidden">
+        <p>Sounds good! I'll be here when the night window opens at 6pm.</p>
+      </div>
+    </div>
+  </section>
   <!-- SCREEN: Night Check-In -->
   <section id="screen-night">
     <div class="screen-content">
@@ -392,7 +474,16 @@
 
     </div>
   </section>
-  <section id="screen-sleep"><div class="screen-content"><h2>Sleep</h2></div></section>
+  <!-- SCREEN: Sleep -->
+  <section id="screen-sleep">
+    <div class="screen-content sleep-screen-content">
+      <div class="sleep-mascot-wrap">
+        <img id="sleep-mascot-img" src="/assets/Milo_Good.png" alt="mascot" class="sleep-mascot-img" />
+      </div>
+      <h2 id="sleep-punchline">Get some rest.</h2>
+      <p class="subtitle" id="sleep-subtitle">Come back in the morning to plan your meals.</p>
+    </div>
+  </section>
 
   <script src="/static/app.js"></script>
   <script src="/static/analyze.js"></script>
